@@ -32,7 +32,7 @@ function DetailSkeleton() {
     <div className="space-y-6">
       <LoadingSkeleton className="h-6 w-32" />
       <div className="flex flex-col items-center gap-6 md:flex-row md:items-start">
-        <LoadingSkeleton className="h-64 w-64 rounded-full" />
+        <LoadingSkeleton className="h-48 w-48 rounded-full sm:h-64 sm:w-64" />
         <div className="flex-1 space-y-4">
           <LoadingSkeleton className="h-8 w-48" />
           <LoadingSkeleton className="h-5 w-24" />
@@ -164,7 +164,7 @@ export default function PokemonDetailPage() {
       <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className={`h-2 ${typeColors.bg}`} />
         <div className="flex flex-col items-center gap-6 p-6 md:flex-row md:items-start md:p-8">
-          <div className="relative h-64 w-64 shrink-0">
+          <div className="relative h-48 w-48 shrink-0 sm:h-64 sm:w-64">
             <div className="absolute inset-0 rounded-full bg-slate-50" />
             {image ? (
               <img
@@ -183,7 +183,7 @@ export default function PokemonDetailPage() {
             <p className="text-sm font-semibold uppercase tracking-widest text-slate-400">
               {formattedId}
             </p>
-            <h1 className="mt-1 text-4xl font-bold capitalize tracking-tight text-slate-900">
+            <h1 className="mt-1 text-3xl font-bold capitalize tracking-tight text-slate-900 sm:text-4xl">
               {pokemon.name.replace(/-/g, " ")}
             </h1>
             <div className="mt-3 flex flex-wrap justify-center gap-2 md:justify-start">
@@ -235,7 +235,7 @@ export default function PokemonDetailPage() {
             const pct = Math.min((s.base / STAT_MAX) * 100, 100);
             return (
               <div key={s.name} className="flex items-center gap-3">
-                <span className="w-24 shrink-0 text-right text-sm font-medium text-slate-600">
+                <span className="w-20 shrink-0 text-right text-xs font-medium text-slate-600 sm:w-24 sm:text-sm">
                   {STAT_LABELS[s.name] || s.name}
                 </span>
                 <div className="h-3 flex-1 overflow-hidden rounded-full bg-slate-100">

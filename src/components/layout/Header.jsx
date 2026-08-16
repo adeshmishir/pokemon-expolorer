@@ -9,7 +9,7 @@ export default function Header() {
             <span className="absolute inset-x-0 top-0 h-1/2 bg-pokeball-red" />
             <span className="absolute inset-x-0 top-1/2 h-0.5 bg-pokeball-dark" />
           </span>
-          <span className="text-lg font-bold tracking-tight text-slate-900">
+          <span className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
             Pokémon Explorer
           </span>
         </Link>

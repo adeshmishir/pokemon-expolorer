@@ -44,7 +44,7 @@ export default function TypeFilter({ selectedType = "all", onTypeChange }) {
               aria-label={type === "all" ? "Show all Pokémon" : `Filter by ${type}`}
               onClick={() => onTypeChange(type)}
               className={cn(
-                "inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold capitalize transition-all duration-150 outline-none",
+                "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold capitalize transition-all duration-150 outline-none sm:px-4 sm:py-1.5 sm:text-sm",
                 "focus-visible:ring-2 focus-visible:ring-offset-2",
                 type === "all"
                   ? isActive

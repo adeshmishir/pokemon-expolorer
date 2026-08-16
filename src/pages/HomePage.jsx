@@ -184,7 +184,7 @@ export default function HomePage() {
   return (
     <div aria-busy={loading || searchLoading || typeLoading}>
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
           Explore Pokémon
         </h1>
         <p className="mt-2 text-slate-500">
