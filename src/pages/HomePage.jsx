@@ -1,11 +1,7 @@
-import { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
-import {
-  getPokemonList,
-  getPokemonDetails,
-  getPokemonByType,
-} from "../services/pokeApi";
-import { isApiError } from "../utils/errors";
+import usePokemonList from "../hooks/usePokemonList";
+import usePokemonSearch from "../hooks/usePokemonSearch";
+import usePokemonByType from "../hooks/usePokemonByType";
 import PokemonGrid from "../components/pokemon/PokemonGrid";
 import PokemonSkeletonCard from "../components/pokemon/PokemonSkeletonCard";
 import SearchBar from "../components/pokemon/SearchBar";
@@ -15,214 +11,63 @@ import ErrorMessage from "../components/ui/ErrorMessage";
 import EmptyState from "../components/ui/EmptyState";
 
 export default function HomePage() {
-  const [pokemon, setPokemon] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [total, setTotal] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResult, setSearchResult] = useState(null);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [searchError, setSearchError] = useState(null);
-  const [isSearching, setIsSearching] = useState(false);
-
-  const [selectedType, setSelectedType] = useState("all");
-  const [typePokemon, setTypePokemon] = useState([]);
-  const [typeLoading, setTypeLoading] = useState(false);
-  const [typeError, setTypeError] = useState(null);
-
-  const typeFetchId = useRef(0);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchPokemon() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const list = await getPokemonList(20, 0);
-        const results = await Promise.allSettled(
-          list.results.map((p) => getPokemonDetails(p.name))
-        );
-
-        if (cancelled) return;
-
-        const succeeded = results
-          .filter((r) => r.status === "fulfilled")
-          .map((r) => r.value);
-
-        setPokemon(succeeded);
-        setTotal(list.count);
-        setHasMore(list.next !== null);
-      } catch (err) {
-        if (!cancelled) {
-          setError(isApiError(err) ? err.message : "Failed to load Pokémon");
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchPokemon();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  async function handleLoadMore() {
-    if (loadingMore) return;
-
-    setLoadingMore(true);
-
-    try {
-      const list = await getPokemonList(20, pokemon.length);
-      const results = await Promise.allSettled(
-        list.results.map((p) => getPokemonDetails(p.name))
-      );
-
-      const succeeded = results
-        .filter((r) => r.status === "fulfilled")
-        .map((r) => r.value);
-
-      setPokemon((prev) => [...prev, ...succeeded]);
-      setHasMore(list.next !== null);
-    } catch {
-      // keep existing pokemon visible, button stays for retry
-    } finally {
-      setLoadingMore(false);
-    }
-  }
+  const list = usePokemonList();
+  const search = usePokemonSearch();
+  const type = usePokemonByType();
 
   function handleSearch(query) {
-    const trimmed = query.trim();
-    if (!trimmed) return;
-
-    const normalized = trimmed.toLowerCase();
-    setSearchQuery(normalized);
-    setIsSearching(true);
-    setSearchLoading(true);
-    setSearchError(null);
-    setSearchResult(null);
-    setSelectedType("all");
-
-    getPokemonDetails(normalized)
-      .then((data) => {
-        setSearchResult(data);
-        setSearchLoading(false);
-      })
-      .catch((err) => {
-        setSearchLoading(false);
-        if (isApiError(err) && err.status === 404) {
-          setSearchError("not_found");
-        } else {
-          setSearchError("api_error");
-        }
-      });
+    search.search(query);
+    type.changeType("all");
   }
 
   function handleClearSearch() {
-    setSearchQuery("");
-    setSearchResult(null);
-    setSearchLoading(false);
-    setSearchError(null);
-    setIsSearching(false);
-    setSelectedType("all");
+    search.clearSearch();
+    type.changeType("all");
   }
 
-  async function handleTypeChange(type) {
-    if (type === selectedType) return;
-
-    setSelectedType(type);
-
-    if (type === "all") {
-      setTypePokemon([]);
-      setTypeLoading(false);
-      setTypeError(null);
-      return;
-    }
-
-    setIsSearching(false);
-    setSearchQuery("");
-    setSearchResult(null);
-    setSearchError(null);
-
-    const fetchId = ++typeFetchId.current;
-    setTypeLoading(true);
-    setTypeError(null);
-    setTypePokemon([]);
-
-    try {
-      const typeData = await getPokemonByType(type);
-
-      const detailResults = await Promise.allSettled(
-        typeData.pokemon.map((p) => getPokemonDetails(p.name))
-      );
-
-      if (fetchId !== typeFetchId.current) return;
-
-      const succeeded = detailResults
-        .filter((r) => r.status === "fulfilled")
-        .map((r) => r.value);
-
-      setTypePokemon(succeeded);
-      setTypeLoading(false);
-    } catch (err) {
-      if (fetchId !== typeFetchId.current) return;
-
-      setTypeLoading(false);
-      setTypeError(
-        isApiError(err) ? err.message : "Failed to load Pokémon for this type"
-      );
-    }
+  function handleTypeChange(typeName) {
+    type.changeType(typeName);
+    search.clearSearch();
   }
-
-  const isTypeFiltering = selectedType !== "all";
 
   return (
-    <div aria-busy={loading || searchLoading || typeLoading}>
+    <div aria-busy={list.loading || search.searchLoading || type.typeLoading}>
       <div className="mb-8 text-center">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
           Explore Pokémon
         </h1>
         <p className="mt-2 text-slate-500">
-          {isSearching
-            ? `Search results for "${searchQuery}"`
-            : isTypeFiltering
-              ? typeLoading
-                ? `Loading ${selectedType} Pokémon…`
-                : `${typePokemon.length} ${selectedType} Pokémon`
-              : <>Browse the complete Pokédex — {loading ? "..." : pokemon.length} Pokémon loaded</>}
+          {search.isSearching
+            ? `Search results for "${search.searchQuery}"`
+            : type.isTypeFiltering
+              ? type.typeLoading
+                ? `Loading ${type.selectedType} Pokémon…`
+                : `${type.typePokemon.length} ${type.selectedType} Pokémon`
+              : <>Browse the complete Pokédex — {list.loading ? "..." : list.pokemon.length} Pokémon loaded</>}
         </p>
       </div>
 
       <SearchBar
-        value={searchQuery}
-        onChange={setSearchQuery}
-        onSubmit={() => handleSearch(searchQuery)}
+        value={search.searchQuery}
+        onChange={(q) => { search.search(q); type.changeType("all"); }}
+        onSubmit={() => handleSearch(search.searchQuery)}
         onClear={handleClearSearch}
       />
 
       <TypeFilter
-        selectedType={selectedType}
+        selectedType={type.selectedType}
         onTypeChange={handleTypeChange}
       />
 
-      {error && !isTypeFiltering && (
+      {list.error && !type.isTypeFiltering && (
         <ErrorMessage
           title="Failed to load Pokémon"
-          message={error}
-          onRetry={() => {
-            setPokemon([]);
-            setLoading(true);
-            setError(null);
-          }}
+          message={list.error}
+          onRetry={list.retry}
         />
       )}
 
-      {loading && !isTypeFiltering && (
+      {list.loading && !type.isTypeFiltering && (
         <PokemonGrid>
           {Array.from({ length: 20 }, (_, i) => (
             <PokemonSkeletonCard key={i} />
@@ -230,37 +75,37 @@ export default function HomePage() {
         </PokemonGrid>
       )}
 
-      {!loading && !error && !isSearching && !isTypeFiltering && pokemon.length > 0 && (
+      {!list.loading && !list.error && !search.isSearching && !type.isTypeFiltering && list.pokemon.length > 0 && (
         <>
-          <PokemonGrid pokemon={pokemon} />
+          <PokemonGrid pokemon={list.pokemon} />
           <LoadMoreButton
-            onLoadMore={handleLoadMore}
-            isLoading={loadingMore}
-            hasMore={hasMore}
-            loadedCount={pokemon.length}
-            total={total}
+            onLoadMore={list.loadMore}
+            isLoading={list.loadingMore}
+            hasMore={list.hasMore}
+            loadedCount={list.pokemon.length}
+            total={list.total}
           />
         </>
       )}
 
-      {!loading && !error && !isSearching && !isTypeFiltering && pokemon.length === 0 && (
+      {!list.loading && !list.error && !search.isSearching && !type.isTypeFiltering && list.pokemon.length === 0 && (
         <EmptyState
           title="No Pokémon found"
           description="The Pokédex came up empty."
         />
       )}
 
-      {isSearching && searchLoading && (
+      {search.isSearching && search.searchLoading && (
         <PokemonGrid>
           <PokemonSkeletonCard />
         </PokemonGrid>
       )}
 
-      {isSearching && searchResult && (
-        <PokemonGrid pokemon={[searchResult]} />
+      {search.isSearching && search.searchResult && (
+        <PokemonGrid pokemon={[search.searchResult]} />
       )}
 
-      {isSearching && searchError === "not_found" && (
+      {search.isSearching && search.searchError === "not_found" && (
         <EmptyState
           icon={Search}
           title="Pokémon not found"
@@ -268,15 +113,15 @@ export default function HomePage() {
         />
       )}
 
-      {isSearching && searchError === "api_error" && (
+      {search.isSearching && search.searchError === "api_error" && (
         <ErrorMessage
           title="Search failed"
           message="Something went wrong while searching. Please try again."
-          onRetry={() => handleSearch(searchQuery)}
+          onRetry={() => search.search(search.searchQuery)}
         />
       )}
 
-      {isTypeFiltering && typeLoading && (
+      {type.isTypeFiltering && type.typeLoading && (
         <PokemonGrid>
           {Array.from({ length: 12 }, (_, i) => (
             <PokemonSkeletonCard key={i} />
@@ -284,19 +129,19 @@ export default function HomePage() {
         </PokemonGrid>
       )}
 
-      {isTypeFiltering && !typeLoading && typeError && (
+      {type.isTypeFiltering && !type.typeLoading && type.typeError && (
         <ErrorMessage
           title="Failed to load Pokémon"
-          message={typeError}
-          onRetry={() => handleTypeChange(selectedType)}
+          message={type.typeError}
+          onRetry={() => type.changeType(type.selectedType)}
         />
       )}
 
-      {isTypeFiltering && !typeLoading && !typeError && typePokemon.length > 0 && (
-        <PokemonGrid pokemon={typePokemon} />
+      {type.isTypeFiltering && !type.typeLoading && !type.typeError && type.typePokemon.length > 0 && (
+        <PokemonGrid pokemon={type.typePokemon} />
       )}
 
-      {isTypeFiltering && !typeLoading && !typeError && typePokemon.length === 0 && (
+      {type.isTypeFiltering && !type.typeLoading && !type.typeError && type.typePokemon.length === 0 && (
         <EmptyState
           icon={Search}
           title="No Pokémon found"

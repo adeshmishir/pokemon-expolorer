@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Search } from "lucide-react";
-import { getPokemonDetails } from "../services/pokeApi";
-import { isApiError } from "../utils/errors";
+import usePokemonDetails from "../hooks/usePokemonDetails";
 import { getTypeColors } from "../utils/typeColors";
 import TypeBadge from "../components/pokemon/TypeBadge";
 import LoadingSkeleton from "../components/ui/LoadingSkeleton";
@@ -49,50 +47,26 @@ function DetailSkeleton() {
   );
 }
 
+function BackLink() {
+  return (
+    <Link
+      to="/"
+      className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors duration-150 hover:text-slate-800"
+    >
+      <ArrowLeft className="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-0.5" />
+      Back to list
+    </Link>
+  );
+}
+
 export default function PokemonDetailPage() {
   const { name } = useParams();
-  const [pokemon, setPokemon] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [retryKey, setRetryKey] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    setLoading(true);
-    setError(null);
-    setPokemon(null);
-
-    getPokemonDetails(name)
-      .then((data) => {
-        if (!cancelled) setPokemon(data);
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          if (isApiError(err) && err.status === 404) {
-            setError("not_found");
-          } else {
-            setError("api_error");
-          }
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => { cancelled = true; };
-  }, [name, retryKey]);
+  const { pokemon, loading, error, retry } = usePokemonDetails(name);
 
   if (loading) {
     return (
       <div>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to list
-        </Link>
+        <BackLink />
         <div className="mt-6">
           <DetailSkeleton />
         </div>
@@ -103,13 +77,7 @@ export default function PokemonDetailPage() {
   if (error === "not_found") {
     return (
       <div>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to list
-        </Link>
+        <BackLink />
         <div className="mt-8">
           <EmptyState
             icon={Search}
@@ -124,18 +92,12 @@ export default function PokemonDetailPage() {
   if (error === "api_error") {
     return (
       <div>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to list
-        </Link>
+        <BackLink />
         <div className="mt-6">
           <ErrorMessage
             title="Failed to load Pokémon"
             message="Something went wrong. Please try again."
-            onRetry={() => setRetryKey((k) => k + 1)}
+            onRetry={retry}
           />
         </div>
       </div>
@@ -152,13 +114,7 @@ export default function PokemonDetailPage() {
 
   return (
     <div>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors duration-150 hover:text-slate-800"
-        >
-          <ArrowLeft className="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-0.5" />
-          Back to list
-        </Link>
+      <BackLink />
 
       {/* Hero */}
       <div className="animate-fade-in mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
