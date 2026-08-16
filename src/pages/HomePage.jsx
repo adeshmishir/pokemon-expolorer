@@ -5,12 +5,16 @@ import { isApiError } from "../utils/errors";
 import PokemonGrid from "../components/pokemon/PokemonGrid";
 import PokemonSkeletonCard from "../components/pokemon/PokemonSkeletonCard";
 import SearchBar from "../components/pokemon/SearchBar";
+import LoadMoreButton from "../components/pokemon/LoadMoreButton";
 import ErrorMessage from "../components/ui/ErrorMessage";
 
 export default function HomePage() {
   const [pokemon, setPokemon] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState(null);
@@ -38,6 +42,8 @@ export default function HomePage() {
           .map((r) => r.value);
 
         setPokemon(succeeded);
+        setTotal(list.count);
+        setHasMore(list.next !== null);
       } catch (err) {
         if (!cancelled) {
           setError(isApiError(err) ? err.message : "Failed to load Pokémon");
@@ -52,6 +58,30 @@ export default function HomePage() {
       cancelled = true;
     };
   }, []);
+
+  async function handleLoadMore() {
+    if (loadingMore) return;
+
+    setLoadingMore(true);
+
+    try {
+      const list = await getPokemonList(20, pokemon.length);
+      const results = await Promise.allSettled(
+        list.results.map((p) => getPokemonDetails(p.name))
+      );
+
+      const succeeded = results
+        .filter((r) => r.status === "fulfilled")
+        .map((r) => r.value);
+
+      setPokemon((prev) => [...prev, ...succeeded]);
+      setHasMore(list.next !== null);
+    } catch {
+      // keep existing pokemon visible, button stays for retry
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   function handleSearch(query) {
     const trimmed = query.trim();
@@ -128,7 +158,16 @@ export default function HomePage() {
       )}
 
       {!loading && !error && !isSearching && pokemon.length > 0 && (
-        <PokemonGrid pokemon={pokemon} />
+        <>
+          <PokemonGrid pokemon={pokemon} />
+          <LoadMoreButton
+            onLoadMore={handleLoadMore}
+            isLoading={loadingMore}
+            hasMore={hasMore}
+            loadedCount={pokemon.length}
+            total={total}
+          />
+        </>
       )}
 
       {!loading && !error && !isSearching && pokemon.length === 0 && (
