@@ -1,0 +1,7 @@
+node_modules
+dist
+.vite
+*.local
+.DS_Store
+
+POKEMON_EXPLORER_MASTER_PLAN.txt
