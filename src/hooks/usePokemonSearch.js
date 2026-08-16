@@ -58,6 +58,10 @@ export default function usePokemonSearch(initialQuery = "") {
       });
   }, []);
 
+  const setQuery = useCallback((query) => {
+    setSearchQuery(query.trim().toLowerCase());
+  }, []);
+
   const clearSearch = useCallback(() => {
     setSearchQuery("");
     setSearchResult(null);
@@ -73,6 +77,7 @@ export default function usePokemonSearch(initialQuery = "") {
     searchError,
     isSearching,
     search,
+    setQuery,
     clearSearch,
   };
 }

@@ -81,7 +81,7 @@ export default function HomePage() {
 
       <SearchBar
         value={search.searchQuery}
-        onChange={(q) => { search.search(q); type.changeType("all"); setSearchParams(q ? { q } : {}); }}
+        onChange={(q) => { search.setQuery(q); type.changeType("all"); setSearchParams(q ? { q } : {}); }}
         onSubmit={() => handleSearch(search.searchQuery)}
         onClear={handleClearSearch}
       />
