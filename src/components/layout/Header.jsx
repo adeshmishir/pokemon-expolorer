@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { Sun, Moon, Dices, Heart } from "lucide-react";
 import useTheme from "../../hooks/useTheme";
+import useFavorites from "../../hooks/useFavorites";
 import { cn } from "../../utils/cn";
 
-export default function Header({ favorites = [], onNavigate }) {
+export default function Header() {
   const { theme, toggleTheme } = useTheme();
+  const { favorites } = useFavorites();
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)]/80 backdrop-blur-md dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-surface)]/80">
@@ -34,19 +36,33 @@ export default function Header({ favorites = [], onNavigate }) {
           >
             Pokédex
           </Link>
-          <span className="flex items-center gap-1 rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)]">
+          <Link
+            to="/collection"
+            className={cn(
+              "flex items-center gap-1 rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors",
+              "text-[var(--color-pokedex-muted)] hover:bg-[var(--color-pokedex-border)]/50 hover:text-[var(--color-pokedex-text)]",
+              "dark:text-[var(--color-pokedex-dark-muted)] dark:hover:bg-[var(--color-pokedex-dark-border)]/50 dark:hover:text-[var(--color-pokedex-dark-text)]"
+            )}
+          >
             <Heart className="h-3 w-3" />
             <span>Collection</span>
-            {favorites > 0 && (
+            {favorites.length > 0 && (
               <span className="ml-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-pokeball-red)] px-1 text-[10px] font-bold text-white">
-                {favorites}
+                {favorites.length}
               </span>
             )}
-          </span>
-          <span className="flex items-center gap-1 rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)]">
+          </Link>
+          <Link
+            to="/battle-lab"
+            className={cn(
+              "flex items-center gap-1 rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors",
+              "text-[var(--color-pokedex-muted)] hover:bg-[var(--color-pokedex-border)]/50 hover:text-[var(--color-pokedex-text)]",
+              "dark:text-[var(--color-pokedex-dark-muted)] dark:hover:bg-[var(--color-pokedex-dark-border)]/50 dark:hover:text-[var(--color-pokedex-dark-text)]"
+            )}
+          >
             <Dices className="h-3 w-3" />
             Battle Lab
-          </span>
+          </Link>
         </nav>
 
         <button
