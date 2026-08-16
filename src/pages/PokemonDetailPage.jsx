@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 import { getPokemonDetails } from "../services/pokeApi";
 import { isApiError } from "../utils/errors";
 import { getTypeColors } from "../utils/typeColors";
 import TypeBadge from "../components/pokemon/TypeBadge";
 import LoadingSkeleton from "../components/ui/LoadingSkeleton";
 import ErrorMessage from "../components/ui/ErrorMessage";
+import EmptyState from "../components/ui/EmptyState";
 
 const STAT_MAX = 255;
 const STAT_LABELS = {
@@ -53,6 +54,7 @@ export default function PokemonDetailPage() {
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,7 +81,7 @@ export default function PokemonDetailPage() {
       });
 
     return () => { cancelled = true; };
-  }, [name]);
+  }, [name, retryKey]);
 
   if (loading) {
     return (
@@ -108,11 +110,12 @@ export default function PokemonDetailPage() {
           <ArrowLeft className="h-4 w-4" />
           Back to list
         </Link>
-        <div className="mt-8 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
-          <p className="text-base font-semibold text-slate-800">Pokémon not found</p>
-          <p className="text-sm text-slate-500">
-            The Pokémon you're looking for doesn't exist.
-          </p>
+        <div className="mt-8">
+          <EmptyState
+            icon={Search}
+            title="Pokémon not found"
+            description="The Pokémon you're looking for doesn't exist."
+          />
         </div>
       </div>
     );
@@ -132,6 +135,7 @@ export default function PokemonDetailPage() {
           <ErrorMessage
             title="Failed to load Pokémon"
             message="Something went wrong. Please try again."
+            onRetry={() => setRetryKey((k) => k + 1)}
           />
         </div>
       </div>

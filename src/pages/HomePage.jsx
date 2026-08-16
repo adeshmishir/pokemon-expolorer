@@ -12,6 +12,7 @@ import SearchBar from "../components/pokemon/SearchBar";
 import TypeFilter from "../components/pokemon/TypeFilter";
 import LoadMoreButton from "../components/pokemon/LoadMoreButton";
 import ErrorMessage from "../components/ui/ErrorMessage";
+import EmptyState from "../components/ui/EmptyState";
 
 export default function HomePage() {
   const [pokemon, setPokemon] = useState([]);
@@ -243,7 +244,10 @@ export default function HomePage() {
       )}
 
       {!loading && !error && !isSearching && !isTypeFiltering && pokemon.length === 0 && (
-        <ErrorMessage title="No Pokémon found" message="The Pokédex came up empty." />
+        <EmptyState
+          title="No Pokémon found"
+          description="The Pokédex came up empty."
+        />
       )}
 
       {isSearching && searchLoading && (
@@ -257,13 +261,11 @@ export default function HomePage() {
       )}
 
       {isSearching && searchError === "not_found" && (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
-          <Search className="h-10 w-10 text-slate-300" />
-          <p className="text-base font-semibold text-slate-800">Pokémon not found</p>
-          <p className="text-sm text-slate-500">
-            Try searching for another Pokémon.
-          </p>
-        </div>
+        <EmptyState
+          icon={Search}
+          title="Pokémon not found"
+          description="Try searching for another Pokémon."
+        />
       )}
 
       {isSearching && searchError === "api_error" && (
@@ -295,12 +297,11 @@ export default function HomePage() {
       )}
 
       {isTypeFiltering && !typeLoading && !typeError && typePokemon.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
-          <p className="text-base font-semibold text-slate-800">No Pokémon found</p>
-          <p className="text-sm text-slate-500">
-            There are no Pokémon available for this type.
-          </p>
-        </div>
+        <EmptyState
+          icon={Search}
+          title="No Pokémon found"
+          description="There are no Pokémon available for this type."
+        />
       )}
     </div>
   );
