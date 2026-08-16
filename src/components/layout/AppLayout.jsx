@@ -12,16 +12,15 @@ export default function AppLayout() {
         Skip to main content
       </a>
       <Header />
-      <div className="relative flex-1">
-        <div className="pokedex-bg pointer-events-none absolute inset-0 opacity-30 dark:opacity-20" aria-hidden="true" />
-        <main
-          id="main-content"
-          tabIndex={-1}
-          className="relative mx-auto w-full max-w-6xl px-4 py-8 outline-none sm:py-10"
-        >
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="relative flex-1 outline-none"
+      >
+        <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:py-10">
           <Outlet />
-        </main>
-      </div>
+        </div>
+      </main>
       <Footer />
     </div>
   );

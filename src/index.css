@@ -11,18 +11,21 @@
   --color-pokeball-dark: #1f2937;
   --color-pokemon-yellow: #ffcb05;
   --color-pokemon-blue: #3b4cca;
+  --color-pokemon-green: #3dc83d;
+  --color-pokemon-purple: #7b2d8b;
+  --color-pokemon-orange: #f08030;
 
-  --color-pokedex-surface: #f8f9fa;
+  --color-pokedex-surface: #f0f4f8;
   --color-pokedex-panel: #ffffff;
-  --color-pokedex-border: #e2e5e9;
+  --color-pokedex-border: #dde3ea;
   --color-pokedex-text: #1a1d21;
   --color-pokedex-muted: #6b7280;
   --color-pokedex-subtle: #9ca3af;
 
-  --color-pokedex-dark-bg: #0f1117;
-  --color-pokedex-dark-surface: #161922;
-  --color-pokedex-dark-panel: #1c2030;
-  --color-pokedex-dark-border: #2a2e3d;
+  --color-pokedex-dark-bg: #0a0e14;
+  --color-pokedex-dark-surface: #111620;
+  --color-pokedex-dark-panel: #171d2a;
+  --color-pokedex-dark-border: #252d3d;
   --color-pokedex-dark-text: #e8eaed;
   --color-pokedex-dark-muted: #8b92a5;
 }
@@ -34,6 +37,7 @@
     @apply antialiased;
     background-color: var(--color-pokedex-surface);
     color: var(--color-pokedex-text);
+    overflow-x: hidden;
   }
 
   .dark body,
@@ -53,6 +57,7 @@
 }
 
 @layer utilities {
+  /* ─── Dot pattern background ─── */
   .pokedex-bg {
     background-image:
       radial-gradient(circle at 1px 1px, currentColor 0.5px, transparent 0.5px);
@@ -64,27 +69,58 @@
     color: var(--color-pokedex-dark-border);
   }
 
-  .pokedex-grid-overlay {
-    background-image:
-      linear-gradient(currentColor 1px, transparent 1px),
-      linear-gradient(90deg, currentColor 1px, transparent 1px);
-    background-size: 48px 48px;
-    color: var(--color-pokedex-border);
-    opacity: 0.3;
+  /* ─── Animated floating clouds ─── */
+  @keyframes cloud-drift {
+    0% { transform: translateX(-120%) translateY(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateX(120vw) translateY(-20px); opacity: 0; }
   }
 
-  .dark .pokedex-grid-overlay {
-    color: var(--color-pokedex-dark-border);
-    opacity: 0.2;
+  .animate-cloud {
+    animation: cloud-drift var(--duration, 35s) linear infinite;
+    animation-delay: var(--delay, 0s);
   }
 
+  .dark .animate-cloud {
+    opacity: 0.15;
+  }
+
+  /* ─── Scanning line effect ─── */
+  @keyframes scan-line {
+    0% { top: 0; opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { top: 100%; opacity: 1; }
+  }
+
+  .animate-scan-line {
+    animation: scan-line 2s ease-in-out infinite;
+  }
+
+  /* ─── Poké Ball spin ─── */
+  @keyframes pokeball-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .animate-pokeball-spin {
+    animation: pokeball-spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  /* ─── Poké Ball pulse ─── */
+  @keyframes pokeball-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.8; }
+  }
+
+  .animate-pokeball-pulse {
+    animation: pokeball-pulse 1.5s ease-in-out infinite;
+  }
+
+  /* ─── Shimmer loading ─── */
   @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
   }
 
   .animate-shimmer {
@@ -102,102 +138,166 @@
     background-image: linear-gradient(
       90deg,
       var(--color-pokedex-dark-border) 0%,
-      #252937 50%,
+      #1e2535 50%,
       var(--color-pokedex-dark-border) 100%
     );
   }
 
+  /* ─── Fade in ─── */
   @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .animate-fade-in {
     animation: fade-in 0.3s ease-out both;
   }
 
+  /* ─── Fade in up ─── */
   @keyframes fade-in-up {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .animate-fade-in-up {
     animation: fade-in-up 0.4s ease-out both;
   }
 
+  /* ─── Scale in ─── */
   @keyframes scale-in {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
   }
 
   .animate-scale-in {
     animation: scale-in 0.3s ease-out both;
   }
 
-  @keyframes pulse-subtle {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.7;
-    }
+  /* ─── Bounce in ─── */
+  @keyframes bounce-in {
+    0% { opacity: 0; transform: scale(0.3); }
+    50% { opacity: 1; transform: scale(1.05); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); }
   }
 
-  .animate-pulse-subtle {
-    animation: pulse-subtle 2s ease-in-out infinite;
+  .animate-bounce-in {
+    animation: bounce-in 0.5s ease-out both;
   }
 
+  /* ─── Slide in ─── */
   @keyframes slide-in-right {
-    from {
-      opacity: 0;
-      transform: translateX(-12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(-12px); }
+    to { opacity: 1; transform: translateX(0); }
   }
 
   .animate-slide-in {
     animation: slide-in-right 0.3s ease-out both;
   }
 
+  /* ─── Glow pulse ─── */
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 transparent; }
+    50% { box-shadow: 0 0 20px 4px var(--glow-color, rgba(220, 38, 38, 0.2)); }
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  /* ─── Float ─── */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* ─── Stagger children fade-in ─── */
+  .stagger-children > * {
+    animation: fade-in-up 0.4s ease-out both;
+  }
+  .stagger-children > *:nth-child(1) { animation-delay: 0s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.05s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.1s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.15s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.2s; }
+
+  /* ─── Stat bar fill ─── */
   .stat-bar-fill {
     transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* ─── Card lift ─── */
   .card-lift {
     transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   }
 
   .card-lift:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px) scale(1.01);
     box-shadow:
-      0 4px 6px -1px rgba(0, 0, 0, 0.08),
-      0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      0 8px 16px -4px rgba(0, 0, 0, 0.1),
+      0 4px 8px -4px rgba(0, 0, 0, 0.06);
   }
 
   .dark .card-lift:hover {
     box-shadow:
-      0 4px 6px -1px rgba(0, 0, 0, 0.3),
-      0 2px 4px -2px rgba(0, 0, 0, 0.2);
+      0 8px 16px -4px rgba(0, 0, 0, 0.4),
+      0 4px 8px -4px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ─── Type-colored card background ─── */
+  .type-card-bg {
+    background: linear-gradient(
+      135deg,
+      var(--type-color-a, transparent) 0%,
+      var(--type-color-b, transparent) 100%
+    );
+    opacity: 0.08;
+  }
+
+  /* ─── HP bar animation ─── */
+  @keyframes hp-drain {
+    from { width: var(--from-width, 100%); }
+    to { width: var(--to-width, 100%); }
+  }
+
+  .animate-hp-drain {
+    animation: hp-drain 0.8s ease-out forwards;
+  }
+
+  /* ─── Attack flash ─── */
+  @keyframes attack-flash {
+    0% { opacity: 0; transform: scale(0.8); }
+    20% { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0; transform: scale(1.2); }
+  }
+
+  .animate-attack-flash {
+    animation: attack-flash 0.5s ease-out forwards;
+  }
+
+  /* ─── Reduced motion ─── */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-cloud,
+    .animate-scan-line,
+    .animate-pokeball-spin,
+    .animate-pokeball-pulse,
+    .animate-float,
+    .animate-glow-pulse,
+    .animate-attack-flash,
+    .animate-hp-drain,
+    .animate-bounce-in {
+      animation: none !important;
+    }
+    .card-lift:hover {
+      transform: none;
+    }
+    .stagger-children > * {
+      animation: none !important;
+      opacity: 1;
+    }
   }
 }

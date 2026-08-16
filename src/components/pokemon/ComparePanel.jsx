@@ -30,7 +30,7 @@ function StatRow({ pokemon, statName, isHigher }) {
       <span className="w-10 shrink-0 text-right text-[10px] font-bold uppercase tracking-wider text-[var(--color-pokedex-subtle)] sm:w-12 sm:text-xs dark:text-[var(--color-pokedex-dark-muted)]">
         {STAT_LABELS[statName]}
       </span>
-      <div className="h-2 flex-1 overflow-hidden rounded-full bg-[var(--color-pokedex-surface)] dark:bg-[var(--color-pokedex-dark-bg)]">
+      <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[var(--color-pokedex-surface)] dark:bg-[var(--color-pokedex-dark-bg)]">
         <div
           className={`h-full rounded-full stat-bar-fill ${
             isHigher
@@ -60,7 +60,7 @@ export default function ComparePanel({ pokemon, onClose }) {
     <div
       role="dialog"
       aria-label="Compare Pokémon"
-      className="animate-fade-in mb-8 overflow-hidden rounded-lg border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]"
+      className="animate-fade-in mb-8 overflow-hidden rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]"
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-[var(--color-pokedex-border)] px-4 py-3 dark:border-[var(--color-pokedex-dark-border)]">

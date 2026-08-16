@@ -11,30 +11,42 @@ export default function PokemonCard({
   isComparing,
   onToggleCompare,
 }) {
-  const { id, name, types, sprites } = pokemon;
+  const { id, name, types, sprites, stats } = pokemon;
   const primaryType = types?.[0] || "normal";
   const typeColors = getTypeColors(primaryType);
   const image = sprites?.officialArtwork || sprites?.default || null;
   const formattedId = `#${String(id).padStart(3, "0")}`;
+
+  const hp = stats?.find((s) => s.name === "hp")?.base ?? 0;
+  const attack = stats?.find((s) => s.name === "attack")?.base ?? 0;
+  const defense = stats?.find((s) => s.name === "defense")?.base ?? 0;
+  const speed = stats?.find((s) => s.name === "speed")?.base ?? 0;
 
   return (
     <Link
       to={`/pokemon/${name}`}
       aria-label={`View ${name} details`}
       className={cn(
-        "group relative block rounded-lg border bg-[var(--color-pokedex-panel)] outline-none card-lift",
+        "group relative block overflow-hidden rounded-xl border bg-[var(--color-pokedex-panel)] outline-none card-lift",
         "transition-all duration-200 ease-out",
         "active:scale-[0.98]",
         "focus-visible:ring-2 focus-visible:ring-offset-2",
-        typeColors.border,
         "border-[var(--color-pokedex-border)] focus-visible:ring-[var(--color-pokeball-red)]/40",
         "dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]"
       )}
     >
-      {/* Top accent bar */}
-      <div className={cn("h-1 rounded-t-lg", typeColors.bg)} />
+      {/* Type-colored gradient background */}
+      <div
+        className="absolute inset-0 opacity-[0.07] transition-opacity duration-300 group-hover:opacity-[0.12] dark:opacity-[0.1] dark:group-hover:opacity-[0.15]"
+        style={{
+          background: `linear-gradient(135deg, ${typeColors.hex || "#e2e5e9"} 0%, transparent 70%)`,
+        }}
+      />
 
-      <div className="p-3 sm:p-4">
+      {/* Top accent bar */}
+      <div className={cn("h-1.5 rounded-t-xl", typeColors.bg)} />
+
+      <div className="relative p-3 sm:p-4">
         {/* Action buttons row */}
         <div className="mb-1 flex items-start justify-between">
           <span className="text-[10px] font-bold tracking-wider text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
@@ -91,7 +103,7 @@ export default function PokemonCard({
 
         {/* Image */}
         <div className="relative mx-auto mb-2 h-28 w-28 sm:h-32 sm:w-32">
-          <div className="absolute inset-0 rounded-full bg-[var(--color-pokedex-surface)] dark:bg-[var(--color-pokedex-dark-bg)]" />
+          <div className="absolute inset-0 rounded-full bg-[var(--color-pokedex-surface)] transition-transform duration-300 group-hover:scale-105 dark:bg-[var(--color-pokedex-dark-bg)]" />
           {image ? (
             <img
               src={image}
@@ -115,6 +127,28 @@ export default function PokemonCard({
         <div className="mt-2 flex flex-wrap items-center justify-center gap-1">
           {types.map((type) => (
             <TypeBadge key={type} type={type} />
+          ))}
+        </div>
+
+        {/* Mini stat preview */}
+        <div className="mt-3 grid grid-cols-4 gap-1.5">
+          {[
+            { label: "HP", value: hp, color: "bg-red-400" },
+            { label: "ATK", value: attack, color: "bg-orange-400" },
+            { label: "DEF", value: defense, color: "bg-yellow-400" },
+            { label: "SPD", value: speed, color: "bg-pink-400" },
+          ].map(({ label, value, color }) => (
+            <div key={label} className="text-center">
+              <div className="mx-auto mb-0.5 h-1 w-full overflow-hidden rounded-full bg-[var(--color-pokedex-surface)] dark:bg-[var(--color-pokedex-dark-bg)]">
+                <div
+                  className={cn("h-full rounded-full stat-bar-fill", color)}
+                  style={{ width: `${Math.min((value / 255) * 100, 100)}%` }}
+                />
+              </div>
+              <span className="text-[8px] font-bold uppercase tracking-wider text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
+                {label}
+              </span>
+            </div>
           ))}
         </div>
       </div>

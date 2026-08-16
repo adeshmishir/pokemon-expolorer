@@ -50,7 +50,7 @@ export function sortPokemon(pokemon, sortBy) {
 export default function SortSelect({ value, onChange }) {
   return (
     <div className="mb-6 flex justify-center">
-      <div className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-3 py-1.5 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]">
+      <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-3 py-1.5 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]">
         <ArrowUpDown className="h-3.5 w-3.5 text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]" aria-hidden="true" />
         <label htmlFor="sort-select" className="sr-only">
           Sort Pokémon

@@ -90,6 +90,7 @@ export default function SearchBar({ value, onChange, onSubmit, onClear, suggesti
           <Search className="h-4 w-4 shrink-0 text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]" />
           <input
             ref={inputRef}
+            id="search-input"
             type="text"
             value={value}
             onChange={handleInputChange}
@@ -129,7 +130,7 @@ export default function SearchBar({ value, onChange, onSubmit, onClear, suggesti
           id="search-suggestions"
           role="listbox"
           aria-label="Pokémon suggestions"
-          className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] shadow-lg dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]"
+          className="animate-fade-in absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] shadow-xl dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]"
         >
           {filtered.map((pokemon, i) => {
             const formattedId = `#${String(pokemon.id).padStart(3, "0")}`;

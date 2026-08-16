@@ -9,7 +9,7 @@ export default function LoadMoreButton({ onLoadMore, isLoading, hasMore, loadedC
         onClick={onLoadMore}
         disabled={isLoading}
         aria-label="Load more Pokémon"
-        className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-[var(--color-pokedex-text)] outline-none transition-all duration-150 hover:border-[var(--color-pokedex-subtle)] hover:bg-[var(--color-pokedex-surface)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--color-pokeball-red)]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-text)] dark:hover:border-[var(--color-pokedex-dark-muted)] dark:hover:bg-[var(--color-pokedex-dark-surface)]"
+        className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-6 py-2.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] outline-none transition-all duration-150 hover:border-[var(--color-pokeball-red)]/30 hover:bg-[var(--color-pokedex-surface)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--color-pokeball-red)]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-text)] dark:hover:border-[var(--color-pokeball-red)]/30 dark:hover:bg-[var(--color-pokedex-dark-bg)]"
       >
         {isLoading ? (
           <>
