@@ -2,22 +2,8 @@ import { useState, useEffect } from "react";
 import { getPokemonList, getPokemonDetails } from "../services/pokeApi";
 import { isApiError } from "../utils/errors";
 import PokemonGrid from "../components/pokemon/PokemonGrid";
-import LoadingSkeleton from "../components/ui/LoadingSkeleton";
+import PokemonSkeletonCard from "../components/pokemon/PokemonSkeletonCard";
 import ErrorMessage from "../components/ui/ErrorMessage";
-
-function SkeletonCard() {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <LoadingSkeleton className="mx-auto h-32 w-32 rounded-full" />
-      <LoadingSkeleton className="mx-auto mt-3 h-3 w-16" />
-      <LoadingSkeleton className="mx-auto mt-2 h-5 w-24" />
-      <div className="mt-3 flex justify-center gap-1.5">
-        <LoadingSkeleton className="h-6 w-14 rounded-full" />
-        <LoadingSkeleton className="h-6 w-14 rounded-full" />
-      </div>
-    </div>
-  );
-}
 
 export default function HomePage() {
   const [pokemon, setPokemon] = useState([]);
@@ -60,7 +46,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div>
+    <div aria-busy={loading}>
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">
           Explore Pokémon
@@ -85,7 +71,7 @@ export default function HomePage() {
       {loading && (
         <PokemonGrid>
           {Array.from({ length: 20 }, (_, i) => (
-            <SkeletonCard key={i} />
+            <PokemonSkeletonCard key={i} />
           ))}
         </PokemonGrid>
       )}
