@@ -1,10 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
-import { getPokemonList, getPokemonDetails } from "../services/pokeApi";
+import {
+  getPokemonList,
+  getPokemonDetails,
+  getPokemonByType,
+} from "../services/pokeApi";
 import { isApiError } from "../utils/errors";
 import PokemonGrid from "../components/pokemon/PokemonGrid";
 import PokemonSkeletonCard from "../components/pokemon/PokemonSkeletonCard";
 import SearchBar from "../components/pokemon/SearchBar";
+import TypeFilter from "../components/pokemon/TypeFilter";
 import LoadMoreButton from "../components/pokemon/LoadMoreButton";
 import ErrorMessage from "../components/ui/ErrorMessage";
 
@@ -21,6 +26,13 @@ export default function HomePage() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
+
+  const [selectedType, setSelectedType] = useState("all");
+  const [typePokemon, setTypePokemon] = useState([]);
+  const [typeLoading, setTypeLoading] = useState(false);
+  const [typeError, setTypeError] = useState(null);
+
+  const typeFetchId = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -93,6 +105,7 @@ export default function HomePage() {
     setSearchLoading(true);
     setSearchError(null);
     setSearchResult(null);
+    setSelectedType("all");
 
     getPokemonDetails(normalized)
       .then((data) => {
@@ -115,10 +128,60 @@ export default function HomePage() {
     setSearchLoading(false);
     setSearchError(null);
     setIsSearching(false);
+    setSelectedType("all");
   }
 
+  async function handleTypeChange(type) {
+    if (type === selectedType) return;
+
+    setSelectedType(type);
+
+    if (type === "all") {
+      setTypePokemon([]);
+      setTypeLoading(false);
+      setTypeError(null);
+      return;
+    }
+
+    setIsSearching(false);
+    setSearchQuery("");
+    setSearchResult(null);
+    setSearchError(null);
+
+    const fetchId = ++typeFetchId.current;
+    setTypeLoading(true);
+    setTypeError(null);
+    setTypePokemon([]);
+
+    try {
+      const typeData = await getPokemonByType(type);
+
+      const detailResults = await Promise.allSettled(
+        typeData.pokemon.map((p) => getPokemonDetails(p.name))
+      );
+
+      if (fetchId !== typeFetchId.current) return;
+
+      const succeeded = detailResults
+        .filter((r) => r.status === "fulfilled")
+        .map((r) => r.value);
+
+      setTypePokemon(succeeded);
+      setTypeLoading(false);
+    } catch (err) {
+      if (fetchId !== typeFetchId.current) return;
+
+      setTypeLoading(false);
+      setTypeError(
+        isApiError(err) ? err.message : "Failed to load Pokémon for this type"
+      );
+    }
+  }
+
+  const isTypeFiltering = selectedType !== "all";
+
   return (
-    <div aria-busy={loading || searchLoading}>
+    <div aria-busy={loading || searchLoading || typeLoading}>
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">
           Explore Pokémon
@@ -126,7 +189,11 @@ export default function HomePage() {
         <p className="mt-2 text-slate-500">
           {isSearching
             ? `Search results for "${searchQuery}"`
-            : <>Browse the complete Pokédex — {loading ? "..." : pokemon.length} Pokémon loaded</>}
+            : isTypeFiltering
+              ? typeLoading
+                ? `Loading ${selectedType} Pokémon…`
+                : `${typePokemon.length} ${selectedType} Pokémon`
+              : <>Browse the complete Pokédex — {loading ? "..." : pokemon.length} Pokémon loaded</>}
         </p>
       </div>
 
@@ -137,7 +204,12 @@ export default function HomePage() {
         onClear={handleClearSearch}
       />
 
-      {error && (
+      <TypeFilter
+        selectedType={selectedType}
+        onTypeChange={handleTypeChange}
+      />
+
+      {error && !isTypeFiltering && (
         <ErrorMessage
           title="Failed to load Pokémon"
           message={error}
@@ -149,7 +221,7 @@ export default function HomePage() {
         />
       )}
 
-      {loading && (
+      {loading && !isTypeFiltering && (
         <PokemonGrid>
           {Array.from({ length: 20 }, (_, i) => (
             <PokemonSkeletonCard key={i} />
@@ -157,7 +229,7 @@ export default function HomePage() {
         </PokemonGrid>
       )}
 
-      {!loading && !error && !isSearching && pokemon.length > 0 && (
+      {!loading && !error && !isSearching && !isTypeFiltering && pokemon.length > 0 && (
         <>
           <PokemonGrid pokemon={pokemon} />
           <LoadMoreButton
@@ -170,7 +242,7 @@ export default function HomePage() {
         </>
       )}
 
-      {!loading && !error && !isSearching && pokemon.length === 0 && (
+      {!loading && !error && !isSearching && !isTypeFiltering && pokemon.length === 0 && (
         <ErrorMessage title="No Pokémon found" message="The Pokédex came up empty." />
       )}
 
@@ -200,6 +272,35 @@ export default function HomePage() {
           message="Something went wrong while searching. Please try again."
           onRetry={() => handleSearch(searchQuery)}
         />
+      )}
+
+      {isTypeFiltering && typeLoading && (
+        <PokemonGrid>
+          {Array.from({ length: 12 }, (_, i) => (
+            <PokemonSkeletonCard key={i} />
+          ))}
+        </PokemonGrid>
+      )}
+
+      {isTypeFiltering && !typeLoading && typeError && (
+        <ErrorMessage
+          title="Failed to load Pokémon"
+          message={typeError}
+          onRetry={() => handleTypeChange(selectedType)}
+        />
+      )}
+
+      {isTypeFiltering && !typeLoading && !typeError && typePokemon.length > 0 && (
+        <PokemonGrid pokemon={typePokemon} />
+      )}
+
+      {isTypeFiltering && !typeLoading && !typeError && typePokemon.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
+          <p className="text-base font-semibold text-slate-800">No Pokémon found</p>
+          <p className="text-sm text-slate-500">
+            There are no Pokémon available for this type.
+          </p>
+        </div>
       )}
     </div>
   );
