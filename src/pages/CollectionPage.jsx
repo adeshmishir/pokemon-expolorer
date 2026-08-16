@@ -46,16 +46,14 @@ export default function CollectionPage() {
         <div className="mb-3 flex items-center justify-center gap-2">
           <Heart className="h-4 w-4 text-[var(--color-pokeball-red)]" />
           <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
-            My Collection
+            My Favorites
           </span>
         </div>
         <h1 className="text-2xl font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] sm:text-3xl dark:text-[var(--color-pokedex-dark-text)]">
           Your Pokémon
         </h1>
         <p className="mt-2 text-xs text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)]">
-          {favorites.length === 0
-            ? "No Pokémon collected yet. Favorite Pokémon to add them here."
-            : `${favorites.length} Pokémon in your collection`}
+          {favorites.length === 0 && "Tap the heart icon on any Pokémon to add it to your favorites."}
         </p>
       </div>
 
@@ -72,8 +70,8 @@ export default function CollectionPage() {
       {!loading && favorites.length === 0 && (
         <EmptyState
           icon={Heart}
-          title="No Pokémon collected"
-          description="Tap the heart icon on any Pokémon to add it to your collection."
+          title="No favorites yet"
+          description="Tap the heart icon on any Pokémon to add it here."
         />
       )}
 

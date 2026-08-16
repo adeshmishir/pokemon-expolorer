@@ -393,9 +393,6 @@ export default function BattleLabPage() {
         <h1 className="text-2xl font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] sm:text-3xl dark:text-[var(--color-pokedex-dark-text)]">
           Compare Pokémon
         </h1>
-        <p className="mt-2 text-xs text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)]">
-          Select two Pokémon to compare their stats head to head.
-        </p>
       </div>
 
       {/* Search Modal */}

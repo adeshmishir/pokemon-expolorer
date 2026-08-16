@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
 import { Sun, Moon, Dices, Heart } from "lucide-react";
 import useTheme from "../../hooks/useTheme";
-import useFavorites from "../../hooks/useFavorites";
 import { cn } from "../../utils/cn";
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
-  const { favorites } = useFavorites();
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)]/80 backdrop-blur-md dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-surface)]/80">
@@ -45,12 +43,7 @@ export default function Header() {
             )}
           >
             <Heart className="h-3 w-3" />
-            <span>Collection</span>
-            {favorites.length > 0 && (
-              <span className="ml-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-pokeball-red)] px-1 text-[10px] font-bold text-white">
-                {favorites.length}
-              </span>
-            )}
+            Favorites
           </Link>
           <Link
             to="/battle-lab"

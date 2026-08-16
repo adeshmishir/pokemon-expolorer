@@ -79,11 +79,8 @@ export default function HomePage() {
           </span>
         </div>
         <h1 className="text-2xl font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] sm:text-3xl dark:text-[var(--color-pokedex-dark-text)]">
-          Explore the Pokémon World
+          Pokémon World
         </h1>
-        <p className="mt-2 max-w-md mx-auto text-xs text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)]">
-          Discover Pokémon, inspect their abilities, compare stats, and build your collection.
-        </p>
       </div>
 
       {/* Search */}
