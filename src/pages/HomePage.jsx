@@ -90,6 +90,7 @@ export default function HomePage() {
         onChange={(q) => { search.setQuery(q); type.changeType("all"); setSearchParams(q ? { q } : {}); }}
         onSubmit={() => handleSearch(search.searchQuery)}
         onClear={handleClearSearch}
+        suggestions={list.pokemon}
       />
 
       {/* Section label */}
