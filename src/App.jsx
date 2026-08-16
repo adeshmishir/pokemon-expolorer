@@ -3,6 +3,7 @@ import AppLayout from "./components/layout/AppLayout";
 import HomePage from "./pages/HomePage";
 import PokemonDetailPage from "./pages/PokemonDetailPage";
 import CollectionPage from "./pages/CollectionPage";
+import BattleLabPage from "./pages/BattleLabPage";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
           <Route index element={<HomePage />} />
           <Route path="pokemon/:name" element={<PokemonDetailPage />} />
           <Route path="collection" element={<CollectionPage />} />
+          <Route path="battle-lab" element={<BattleLabPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
