@@ -50,7 +50,7 @@ export default function PokemonCard({
               }
               aria-pressed={isComparing}
               className={cn(
-                "rounded-full p-1.5 transition-all duration-150",
+                "rounded-full p-1.5 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2",
                 isComparing
                   ? "bg-blue-100 text-blue-600"
                   : "text-slate-300 hover:bg-slate-100 hover:text-slate-500"
@@ -70,7 +70,7 @@ export default function PokemonCard({
               aria-label={isFavorite ? `Unfavorite ${name}` : `Favorite ${name}`}
               aria-pressed={isFavorite}
               className={cn(
-                "rounded-full p-1.5 transition-all duration-150",
+                "rounded-full p-1.5 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2",
                 isFavorite
                   ? "text-red-500"
                   : "text-slate-300 hover:bg-slate-100 hover:text-slate-500"

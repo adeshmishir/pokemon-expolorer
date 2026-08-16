@@ -1,6 +1,5 @@
 import { X } from "lucide-react";
 import TypeBadge from "./TypeBadge";
-import { getTypeColors } from "../../utils/typeColors";
 
 const STAT_MAX = 255;
 const STAT_LABELS = {
@@ -68,7 +67,7 @@ export default function ComparePanel({ pokemon, onClose }) {
         <button
           onClick={onClose}
           aria-label="Close comparison"
-          className="rounded-full p-1 text-slate-400 transition-colors hover:bg-slate-200 hover:text-slate-600"
+          className="rounded-full p-1 text-slate-400 transition-colors hover:bg-slate-200 hover:text-slate-600 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
         >
           <X className="h-5 w-5" />
         </button>

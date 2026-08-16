@@ -34,7 +34,7 @@ export default function SearchBar({ value, onChange, onSubmit, onClear }) {
             type="button"
             onClick={onClear}
             aria-label="Clear search"
-            className="rounded-full p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-300"
+            className="rounded-full p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:hover:bg-slate-700 dark:hover:text-slate-300"
           >
             <X className="h-4 w-4" />
           </button>

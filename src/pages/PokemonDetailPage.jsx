@@ -53,7 +53,7 @@ function BackLink() {
   return (
     <Link
       to="/"
-      className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors duration-150 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+      className="group inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors duration-150 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
     >
       <ArrowLeft className="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-0.5" />
       Back to list
@@ -148,7 +148,7 @@ export default function PokemonDetailPage() {
                 onClick={() => toggleFavorite(pokemon.name)}
                 aria-label={favorited ? `Unfavorite ${pokemon.name}` : `Favorite ${pokemon.name}`}
                 className={cn(
-                  "rounded-full p-1.5 transition-all duration-150",
+                  "rounded-full p-1.5 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2",
                   favorited
                     ? "text-red-500"
                     : "text-slate-300 hover:bg-slate-100 hover:text-slate-500 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300"
