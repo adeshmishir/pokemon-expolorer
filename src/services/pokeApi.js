@@ -58,6 +58,24 @@ function normalizeIdentifier(identifier) {
   throw new ApiError(400, "Invalid identifier: must be a name (string) or ID (number)");
 }
 
+// ── Pokemon names index (for search autocomplete) ──────────
+
+let pokemonNamesCache = null;
+
+export async function getAllPokemonNames() {
+  if (pokemonNamesCache) return pokemonNamesCache;
+
+  const data = await request("pokemon?limit=1500&offset=0");
+  validateListData(data);
+
+  pokemonNamesCache = data.results.map((p, i) => ({
+    id: i + 1,
+    name: p.name,
+  }));
+
+  return pokemonNamesCache;
+}
+
 // ── Public API ──────────────────────────────────────────────
 
 export async function getPokemonList(limit = 20, offset = 0) {

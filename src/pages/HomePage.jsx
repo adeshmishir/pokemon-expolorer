@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import usePokemonList from "../hooks/usePokemonList";
 import usePokemonSearch from "../hooks/usePokemonSearch";
 import usePokemonByType from "../hooks/usePokemonByType";
+import usePokemonNames from "../hooks/usePokemonNames";
 import useFavorites from "../hooks/useFavorites";
 import useCompare from "../hooks/useCompare";
 import { sortPokemon } from "../components/pokemon/SortSelect";
@@ -26,6 +27,7 @@ export default function HomePage() {
   const list = usePokemonList();
   const search = usePokemonSearch(initialQuery);
   const type = usePokemonByType();
+  const allNames = usePokemonNames();
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const compare = useCompare();
 
@@ -90,7 +92,7 @@ export default function HomePage() {
         onChange={(q) => { search.setQuery(q); type.changeType("all"); setSearchParams(q ? { q } : {}); }}
         onSubmit={() => handleSearch(search.searchQuery)}
         onClear={handleClearSearch}
-        suggestions={list.pokemon}
+        suggestions={allNames}
       />
 
       {/* Section label */}
