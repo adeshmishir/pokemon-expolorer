@@ -30,7 +30,7 @@ export default function TypeFilter({ selectedType = "all", onTypeChange }) {
       role="radiogroup"
       aria-label="Filter Pokémon by type"
     >
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="flex flex-wrap justify-center gap-1.5">
         {TYPES.map((type) => {
           const isActive = selectedType === type;
           const colors = getTypeColors(type);
@@ -44,18 +44,19 @@ export default function TypeFilter({ selectedType = "all", onTypeChange }) {
               aria-label={type === "all" ? "Show all Pokémon" : `Filter by ${type}`}
               onClick={() => onTypeChange(type)}
               className={cn(
-                "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold capitalize transition-all duration-150 outline-none active:scale-95 sm:px-4 sm:py-1.5 sm:text-sm",
+                "inline-flex items-center rounded-md px-3 py-1 text-[11px] font-bold uppercase tracking-wider transition-all duration-150 outline-none active:scale-95 sm:px-3.5 sm:text-xs",
                 "focus-visible:ring-2 focus-visible:ring-offset-2",
                 type === "all"
                   ? isActive
-                    ? "bg-slate-800 text-white focus-visible:ring-slate-400 dark:bg-slate-600"
-                    : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 focus-visible:ring-slate-400 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                    ? "bg-[var(--color-pokedex-text)] text-[var(--color-pokedex-panel)] focus-visible:ring-[var(--color-pokedex-muted)] dark:bg-[var(--color-pokedex-dark-text)] dark:text-[var(--color-pokedex-dark-bg)]"
+                    : "border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] text-[var(--color-pokedex-muted)] hover:border-[var(--color-pokedex-subtle)] hover:text-[var(--color-pokedex-text)] focus-visible:ring-[var(--color-pokedex-muted)] dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-muted)] dark:hover:border-[var(--color-pokedex-dark-muted)] dark:hover:text-[var(--color-pokedex-dark-text)]"
                   : isActive
-                    ? cn(colors.bg, colors.text, "shadow-md focus-visible:ring-slate-400")
+                    ? cn(colors.bg, colors.text, "shadow-sm focus-visible:ring-[var(--color-pokedex-muted)]")
                     : cn(
-                        "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
-                        "focus-visible:ring-slate-400",
-                        "dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                        "border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] text-[var(--color-pokedex-muted)]",
+                        "hover:border-[var(--color-pokedex-subtle)] hover:text-[var(--color-pokedex-text)]",
+                        "focus-visible:ring-[var(--color-pokedex-muted)]",
+                        "dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-muted)] dark:hover:border-[var(--color-pokedex-dark-muted)] dark:hover:text-[var(--color-pokedex-dark-text)]"
                       )
               )}
             >

@@ -19,16 +19,16 @@ export default class ErrorBoundary extends Component {
     if (this.state.hasError) {
       return (
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8 text-center">
-          <AlertTriangle className="h-12 w-12 text-red-400" aria-hidden="true" />
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+          <AlertTriangle className="h-10 w-10 text-red-400" aria-hidden="true" />
+          <h2 className="text-lg font-bold uppercase tracking-wider text-[var(--color-pokedex-text)] dark:text-[var(--color-pokedex-dark-text)]">
             Something went wrong
           </h2>
-          <p className="max-w-md text-sm text-slate-500 dark:text-slate-400">
+          <p className="max-w-md text-xs text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)]">
             An unexpected error occurred. Please try refreshing the page.
           </p>
           <button
             onClick={this.handleRetry}
-            className="mt-2 rounded-lg bg-slate-800 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-slate-700 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:bg-slate-600 dark:hover:bg-slate-500"
+            className="mt-2 rounded-lg bg-[var(--color-pokedex-text)] px-5 py-2 text-xs font-bold uppercase tracking-wider text-[var(--color-pokedex-panel)] transition-all hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--color-pokeball-red)]/50 focus-visible:ring-offset-2 dark:bg-[var(--color-pokedex-dark-text)] dark:text-[var(--color-pokedex-dark-bg)]"
           >
             Try again
           </button>

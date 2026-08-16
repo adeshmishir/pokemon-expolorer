@@ -7,7 +7,7 @@ export default function TypeBadge({ type = "normal", className }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold capitalize",
+        "inline-flex items-center rounded-md px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider",
         colors.bg,
         colors.text,
         className

@@ -50,8 +50,8 @@ export function sortPokemon(pokemon, sortBy) {
 export default function SortSelect({ value, onChange }) {
   return (
     <div className="mb-6 flex justify-center">
-      <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 shadow-sm">
-        <ArrowUpDown className="h-4 w-4 text-slate-400" aria-hidden="true" />
+      <div className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-3 py-1.5 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]">
+        <ArrowUpDown className="h-3.5 w-3.5 text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]" aria-hidden="true" />
         <label htmlFor="sort-select" className="sr-only">
           Sort Pokémon
         </label>
@@ -59,11 +59,11 @@ export default function SortSelect({ value, onChange }) {
           id="sort-select"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent text-sm font-medium text-slate-700 outline-none"
+          className="bg-transparent text-xs font-semibold uppercase tracking-wider text-[var(--color-pokedex-muted)] outline-none dark:text-[var(--color-pokedex-dark-muted)]"
         >
           {SORT_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
-              Sort: {opt.label}
+              {opt.label}
             </option>
           ))}
         </select>

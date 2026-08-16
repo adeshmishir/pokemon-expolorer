@@ -4,26 +4,80 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;
 
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+    Menlo, Consolas, "Liberation Mono", monospace;
+
   --color-pokeball-red: #dc2626;
   --color-pokeball-dark: #1f2937;
   --color-pokemon-yellow: #ffcb05;
   --color-pokemon-blue: #3b4cca;
+
+  --color-pokedex-surface: #f8f9fa;
+  --color-pokedex-panel: #ffffff;
+  --color-pokedex-border: #e2e5e9;
+  --color-pokedex-text: #1a1d21;
+  --color-pokedex-muted: #6b7280;
+  --color-pokedex-subtle: #9ca3af;
+
+  --color-pokedex-dark-bg: #0f1117;
+  --color-pokedex-dark-surface: #161922;
+  --color-pokedex-dark-panel: #1c2030;
+  --color-pokedex-dark-border: #2a2e3d;
+  --color-pokedex-dark-text: #e8eaed;
+  --color-pokedex-dark-muted: #8b92a5;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    @apply antialiased;
+    background-color: var(--color-pokedex-surface);
+    color: var(--color-pokedex-text);
   }
 
   .dark body,
   .dark {
-    @apply bg-slate-900 text-slate-100;
+    background-color: var(--color-pokedex-dark-bg);
+    color: var(--color-pokedex-dark-text);
+  }
+
+  ::selection {
+    background-color: #dc262633;
+    color: inherit;
+  }
+
+  .dark ::selection {
+    background-color: #dc262644;
   }
 }
 
 @layer utilities {
+  .pokedex-bg {
+    background-image:
+      radial-gradient(circle at 1px 1px, currentColor 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--color-pokedex-border);
+  }
+
+  .dark .pokedex-bg {
+    color: var(--color-pokedex-dark-border);
+  }
+
+  .pokedex-grid-overlay {
+    background-image:
+      linear-gradient(currentColor 1px, transparent 1px),
+      linear-gradient(90deg, currentColor 1px, transparent 1px);
+    background-size: 48px 48px;
+    color: var(--color-pokedex-border);
+    opacity: 0.3;
+  }
+
+  .dark .pokedex-grid-overlay {
+    color: var(--color-pokedex-dark-border);
+    opacity: 0.2;
+  }
+
   @keyframes shimmer {
     0% {
       background-position: -200% 0;
@@ -36,12 +90,21 @@
   .animate-shimmer {
     background-image: linear-gradient(
       90deg,
-      var(--color-slate-200) 0%,
-      var(--color-slate-100) 50%,
-      var(--color-slate-200) 100%
+      var(--color-pokedex-border) 0%,
+      #f0f1f3 50%,
+      var(--color-pokedex-border) 100%
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .dark .animate-shimmer {
+    background-image: linear-gradient(
+      90deg,
+      var(--color-pokedex-dark-border) 0%,
+      #252937 50%,
+      var(--color-pokedex-dark-border) 100%
+    );
   }
 
   @keyframes fade-in {
@@ -57,5 +120,84 @@
 
   .animate-fade-in {
     animation: fade-in 0.3s ease-out both;
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out both;
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out both;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(-12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slide-in-right 0.3s ease-out both;
+  }
+
+  .stat-bar-fill {
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-lift {
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  }
+
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.08),
+      0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .dark .card-lift:hover {
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -2px rgba(0, 0, 0, 0.2);
   }
 }

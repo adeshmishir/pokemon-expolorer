@@ -64,21 +64,27 @@ export default function HomePage() {
 
   return (
     <div aria-busy={list.loading || search.searchLoading || type.typeLoading}>
-      <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
-          Explore Pokémon
+      {/* Hero Section — Pokédex Scanner */}
+      <div className="animate-fade-in-up mb-10 text-center">
+        <div className="mb-4 flex items-center justify-center gap-2">
+          <span className="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[var(--color-pokedex-text)] dark:border-[var(--color-pokedex-dark-text)]">
+            <span className="absolute inset-x-0 top-0 h-1/2 bg-[var(--color-pokeball-red)]" />
+            <span className="absolute inset-x-0 top-1/2 h-[1.5px] bg-[var(--color-pokedex-text)] dark:bg-[var(--color-pokedex-dark-text)]" />
+            <span className="absolute inset-0 m-auto h-1.5 w-1.5 rounded-full border-[1.5px] border-[var(--color-pokedex-text)] bg-[var(--color-pokedex-panel)] dark:border-[var(--color-pokedex-dark-text)] dark:bg-[var(--color-pokedex-dark-surface)]" />
+          </span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
+            Pokédex
+          </span>
+        </div>
+        <h1 className="text-2xl font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] sm:text-3xl dark:text-[var(--color-pokedex-dark-text)]">
+          Explore the Pokémon World
         </h1>
-        <p className="mt-2 text-slate-500 dark:text-slate-400">
-          {search.isSearching
-            ? `Search results for "${search.searchQuery}"`
-            : type.isTypeFiltering
-              ? type.typeLoading
-                ? `Loading ${type.selectedType} Pokémon…`
-                : `${type.typePokemon.length} ${type.selectedType} Pokémon`
-              : <>Browse the complete Pokédex — {list.loading ? "..." : list.pokemon.length} Pokémon loaded</>}
+        <p className="mt-2 max-w-md mx-auto text-xs text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)]">
+          Discover Pokémon, inspect their abilities, compare stats, and build your collection.
         </p>
       </div>
 
+      {/* Search */}
       <SearchBar
         value={search.searchQuery}
         onChange={(q) => { search.setQuery(q); type.changeType("all"); setSearchParams(q ? { q } : {}); }}
@@ -86,11 +92,28 @@ export default function HomePage() {
         onClear={handleClearSearch}
       />
 
+      {/* Section label */}
+      <div className="mb-4 flex items-center gap-3">
+        <div className="h-px flex-1 bg-[var(--color-pokedex-border)] dark:bg-[var(--color-pokedex-dark-border)]" />
+        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
+          {search.isSearching
+            ? "Search Results"
+            : type.isTypeFiltering
+              ? type.typeLoading
+                ? "Loading..."
+                : `${type.selectedType} Pokémon`
+              : "All Pokémon"}
+        </span>
+        <div className="h-px flex-1 bg-[var(--color-pokedex-border)] dark:bg-[var(--color-pokedex-dark-border)]" />
+      </div>
+
+      {/* Type Filter */}
       <TypeFilter
         selectedType={type.selectedType}
         onTypeChange={handleTypeChange}
       />
 
+      {/* Sort */}
       {!search.isSearching && !type.isTypeFiltering && list.pokemon.length > 0 && (
         <SortSelect value={sortBy} onChange={setSortBy} />
       )}
@@ -99,10 +122,12 @@ export default function HomePage() {
         <SortSelect value={sortBy} onChange={setSortBy} />
       )}
 
+      {/* Compare Panel */}
       {compare.selected.length > 0 && (
         <ComparePanel pokemon={compare.selected} onClose={handleCloseCompare} />
       )}
 
+      {/* Error — List */}
       {list.error && !type.isTypeFiltering && (
         <ErrorMessage
           title="Failed to load Pokémon"
@@ -111,6 +136,7 @@ export default function HomePage() {
         />
       )}
 
+      {/* Loading — Initial */}
       {list.loading && !type.isTypeFiltering && (
         <PokemonGrid>
           {Array.from({ length: 20 }, (_, i) => (
@@ -119,6 +145,7 @@ export default function HomePage() {
         </PokemonGrid>
       )}
 
+      {/* Pokemon Grid — Default */}
       {!list.loading && !list.error && !search.isSearching && !type.isTypeFiltering && displayPokemon.length > 0 && (
         <>
           <PokemonGrid
@@ -138,6 +165,7 @@ export default function HomePage() {
         </>
       )}
 
+      {/* Empty — Default */}
       {!list.loading && !list.error && !search.isSearching && !type.isTypeFiltering && list.pokemon.length === 0 && (
         <EmptyState
           title="No Pokémon found"
@@ -145,12 +173,14 @@ export default function HomePage() {
         />
       )}
 
+      {/* Loading — Search */}
       {search.isSearching && search.searchLoading && (
         <PokemonGrid>
           <PokemonSkeletonCard />
         </PokemonGrid>
       )}
 
+      {/* Result — Search */}
       {search.isSearching && search.searchResult && (
         <PokemonGrid
           pokemon={[search.searchResult]}
@@ -161,6 +191,7 @@ export default function HomePage() {
         />
       )}
 
+      {/* Not Found — Search */}
       {search.isSearching && search.searchError === "not_found" && (
         <EmptyState
           icon={Search}
@@ -169,6 +200,7 @@ export default function HomePage() {
         />
       )}
 
+      {/* Error — Search */}
       {search.isSearching && search.searchError === "api_error" && (
         <ErrorMessage
           title="Search failed"
@@ -177,6 +209,7 @@ export default function HomePage() {
         />
       )}
 
+      {/* Loading — Type Filter */}
       {type.isTypeFiltering && type.typeLoading && (
         <PokemonGrid>
           {Array.from({ length: 12 }, (_, i) => (
@@ -185,6 +218,7 @@ export default function HomePage() {
         </PokemonGrid>
       )}
 
+      {/* Error — Type Filter */}
       {type.isTypeFiltering && !type.typeLoading && type.typeError && (
         <ErrorMessage
           title="Failed to load Pokémon"
@@ -193,6 +227,7 @@ export default function HomePage() {
         />
       )}
 
+      {/* Results — Type Filter */}
       {type.isTypeFiltering && !type.typeLoading && !type.typeError && displayPokemon.length > 0 && (
         <PokemonGrid
           pokemon={displayPokemon}
@@ -203,6 +238,7 @@ export default function HomePage() {
         />
       )}
 
+      {/* Empty — Type Filter */}
       {type.isTypeFiltering && !type.typeLoading && !type.typeError && type.typePokemon.length === 0 && (
         <EmptyState
           icon={Search}

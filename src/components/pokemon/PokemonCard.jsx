@@ -22,97 +22,97 @@ export default function PokemonCard({
       to={`/pokemon/${name}`}
       aria-label={`View ${name} details`}
       className={cn(
-        "group block rounded-2xl border bg-white shadow-sm outline-none",
+        "group relative block rounded-lg border bg-[var(--color-pokedex-panel)] outline-none card-lift",
         "transition-all duration-200 ease-out",
-        "hover:-translate-y-1 hover:shadow-md",
         "active:scale-[0.98]",
         "focus-visible:ring-2 focus-visible:ring-offset-2",
         typeColors.border,
-        "border-transparent focus-visible:ring-slate-400"
+        "border-[var(--color-pokedex-border)] focus-visible:ring-[var(--color-pokeball-red)]/40",
+        "dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]"
       )}
     >
-      {/* Type accent strip */}
-      <div className={cn("h-1.5 rounded-t-2xl", typeColors.bg)} />
+      {/* Top accent bar */}
+      <div className={cn("h-1 rounded-t-lg", typeColors.bg)} />
 
-      <div className="p-4">
-        {/* Action buttons */}
-        <div className="mb-1 flex justify-end gap-1">
-          {onToggleCompare && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onToggleCompare(pokemon);
-              }}
-              aria-label={
-                isComparing ? `Remove ${name} from comparison` : `Compare ${name}`
-              }
-              aria-pressed={isComparing}
-              className={cn(
-                "rounded-full p-1.5 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2",
-                isComparing
-                  ? "bg-blue-100 text-blue-600"
-                  : "text-slate-300 hover:bg-slate-100 hover:text-slate-500"
-              )}
-            >
-              <GitCompareArrows className="h-4 w-4" />
-            </button>
-          )}
-          {onToggleFavorite && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onToggleFavorite(name);
-              }}
-              aria-label={isFavorite ? `Unfavorite ${name}` : `Favorite ${name}`}
-              aria-pressed={isFavorite}
-              className={cn(
-                "rounded-full p-1.5 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2",
-                isFavorite
-                  ? "text-red-500"
-                  : "text-slate-300 hover:bg-slate-100 hover:text-slate-500"
-              )}
-            >
-              <Heart
-                className="h-4 w-4"
-                fill={isFavorite ? "currentColor" : "none"}
-              />
-            </button>
-          )}
+      <div className="p-3 sm:p-4">
+        {/* Action buttons row */}
+        <div className="mb-1 flex items-start justify-between">
+          <span className="text-[10px] font-bold tracking-wider text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
+            {formattedId}
+          </span>
+          <div className="flex gap-0.5">
+            {onToggleCompare && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onToggleCompare(pokemon);
+                }}
+                aria-label={
+                  isComparing ? `Remove ${name} from comparison` : `Compare ${name}`
+                }
+                aria-pressed={isComparing}
+                className={cn(
+                  "rounded-md p-1 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[var(--color-pokeball-red)]/50 focus-visible:ring-offset-1",
+                  isComparing
+                    ? "bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400"
+                    : "text-[var(--color-pokedex-subtle)] hover:bg-[var(--color-pokedex-border)]/50 hover:text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)] dark:hover:bg-[var(--color-pokedex-dark-border)]/50"
+                )}
+              >
+                <GitCompareArrows className="h-3.5 w-3.5" />
+              </button>
+            )}
+            {onToggleFavorite && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onToggleFavorite(name);
+                }}
+                aria-label={isFavorite ? `Unfavorite ${name}` : `Favorite ${name}`}
+                aria-pressed={isFavorite}
+                className={cn(
+                  "rounded-md p-1 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[var(--color-pokeball-red)]/50 focus-visible:ring-offset-1",
+                  isFavorite
+                    ? "text-[var(--color-pokeball-red)]"
+                    : "text-[var(--color-pokedex-subtle)] hover:bg-[var(--color-pokedex-border)]/50 hover:text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)] dark:hover:bg-[var(--color-pokedex-dark-border)]/50"
+                )}
+              >
+                <Heart
+                  className="h-3.5 w-3.5"
+                  fill={isFavorite ? "currentColor" : "none"}
+                />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Image */}
-        <div className="relative mx-auto mb-3 h-32 w-32">
-          <div className="absolute inset-0 rounded-full bg-slate-50" />
+        <div className="relative mx-auto mb-2 h-28 w-28 sm:h-32 sm:w-32">
+          <div className="absolute inset-0 rounded-full bg-[var(--color-pokedex-surface)] dark:bg-[var(--color-pokedex-dark-bg)]" />
           {image ? (
             <img
               src={image}
               alt={`${name} artwork`}
-              className="relative h-full w-full object-contain transition-transform duration-200 group-hover:scale-110"
+              className="relative h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
               loading="lazy"
             />
           ) : (
-            <div className="relative flex h-full w-full items-center justify-center rounded-full bg-slate-100">
-              <span className="text-4xl" aria-hidden="true">?</span>
+            <div className="relative flex h-full w-full items-center justify-center rounded-full bg-[var(--color-pokedex-surface)] dark:bg-[var(--color-pokedex-dark-bg)]">
+              <span className="text-4xl text-[var(--color-pokedex-subtle)]" aria-hidden="true">?</span>
             </div>
           )}
         </div>
 
-        {/* ID */}
-        <p className="text-center text-xs font-semibold uppercase tracking-widest text-slate-400">
-          {formattedId}
-        </p>
-
         {/* Name */}
-        <h3 className="mt-1 text-center text-lg font-bold capitalize text-slate-800">
+        <h3 className="text-center text-sm font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] dark:text-[var(--color-pokedex-dark-text)]">
           {name.replace(/-/g, " ")}
         </h3>
 
         {/* Types */}
-        <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5">
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-1">
           {types.map((type) => (
             <TypeBadge key={type} type={type} />
           ))}
