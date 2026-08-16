@@ -17,7 +17,8 @@ export default function PokemonCard({ pokemon }) {
       className={cn(
         "group block rounded-2xl border bg-white shadow-sm outline-none",
         "transition-all duration-200 ease-out",
-        "hover:-translate-y-1 hover:shadow-lg",
+        "hover:-translate-y-1 hover:shadow-md",
+        "active:scale-[0.98]",
         "focus-visible:ring-2 focus-visible:ring-offset-2",
         typeColors.border,
         "border-transparent focus-visible:ring-slate-400"

@@ -31,7 +31,7 @@ export default function SearchBar({ value, onChange, onSubmit, onClear }) {
         <button
           type="submit"
           aria-label="Search"
-          className="rounded-lg bg-slate-800 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
+          className="rounded-lg bg-slate-800 px-4 py-1.5 text-sm font-medium text-white transition-all duration-150 hover:bg-slate-700 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
         >
           Search
         </button>

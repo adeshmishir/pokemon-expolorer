@@ -152,16 +152,16 @@ export default function PokemonDetailPage() {
 
   return (
     <div>
-      <Link
-        to="/"
-        className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to list
-      </Link>
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors duration-150 hover:text-slate-800"
+        >
+          <ArrowLeft className="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-0.5" />
+          Back to list
+        </Link>
 
       {/* Hero */}
-      <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="animate-fade-in mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className={`h-2 ${typeColors.bg}`} />
         <div className="flex flex-col items-center gap-6 p-6 md:flex-row md:items-start md:p-8">
           <div className="relative h-48 w-48 shrink-0 sm:h-64 sm:w-64">
@@ -196,7 +196,7 @@ export default function PokemonDetailPage() {
       </div>
 
       {/* Physical Info */}
-      <div className="mt-6 grid grid-cols-2 gap-4">
+      <div className="animate-fade-in mt-6 grid grid-cols-2 gap-4" style={{ animationDelay: "0.05s" }}>
         <div className="rounded-xl border border-slate-200 bg-white p-5 text-center shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Height</p>
           <p className="mt-1 text-2xl font-bold text-slate-800">{heightM} m</p>
@@ -208,7 +208,7 @@ export default function PokemonDetailPage() {
       </div>
 
       {/* Abilities */}
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="animate-fade-in mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm" style={{ animationDelay: "0.1s" }}>
         <h2 className="text-lg font-bold text-slate-800">Abilities</h2>
         <div className="mt-3 flex flex-wrap gap-2">
           {pokemon.abilities.map((a) => (
@@ -228,7 +228,7 @@ export default function PokemonDetailPage() {
       </div>
 
       {/* Base Stats */}
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="animate-fade-in mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm" style={{ animationDelay: "0.15s" }}>
         <h2 className="text-lg font-bold text-slate-800">Base Stats</h2>
         <div className="mt-4 space-y-3">
           {pokemon.stats.map((s) => {
@@ -254,7 +254,7 @@ export default function PokemonDetailPage() {
       </div>
 
       {/* Moves */}
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="animate-fade-in mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm" style={{ animationDelay: "0.2s" }}>
         <h2 className="text-lg font-bold text-slate-800">Moves</h2>
         <div className="mt-3 flex flex-wrap gap-2">
           {displayMoves.map((move) => (

@@ -10,7 +10,7 @@ export default function ErrorMessage({
   return (
     <div
       role="alert"
-      className="flex flex-col items-center justify-center gap-3 rounded-xl border border-red-200 bg-red-50 p-8 text-center"
+      className="animate-fade-in flex flex-col items-center justify-center gap-3 rounded-xl border border-red-200 bg-red-50 p-8 text-center"
     >
       <AlertTriangle className="h-8 w-8 text-red-400" aria-hidden="true" />
       <p className="text-base font-semibold text-red-800">{title}</p>
