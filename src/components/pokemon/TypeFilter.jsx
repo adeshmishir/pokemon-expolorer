@@ -48,13 +48,14 @@ export default function TypeFilter({ selectedType = "all", onTypeChange }) {
                 "focus-visible:ring-2 focus-visible:ring-offset-2",
                 type === "all"
                   ? isActive
-                    ? "bg-slate-800 text-white focus-visible:ring-slate-400"
-                    : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 focus-visible:ring-slate-400"
+                    ? "bg-slate-800 text-white focus-visible:ring-slate-400 dark:bg-slate-600"
+                    : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 focus-visible:ring-slate-400 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                   : isActive
                     ? cn(colors.bg, colors.text, "shadow-md focus-visible:ring-slate-400")
                     : cn(
                         "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
-                        "focus-visible:ring-slate-400"
+                        "focus-visible:ring-slate-400",
+                        "dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                       )
               )}
             >

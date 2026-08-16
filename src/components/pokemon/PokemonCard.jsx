@@ -1,9 +1,16 @@
 import { Link } from "react-router-dom";
+import { Heart, GitCompareArrows } from "lucide-react";
 import TypeBadge from "./TypeBadge";
 import { getTypeColors } from "../../utils/typeColors";
 import { cn } from "../../utils/cn";
 
-export default function PokemonCard({ pokemon }) {
+export default function PokemonCard({
+  pokemon,
+  isFavorite,
+  onToggleFavorite,
+  isComparing,
+  onToggleCompare,
+}) {
   const { id, name, types, sprites } = pokemon;
   const primaryType = types?.[0] || "normal";
   const typeColors = getTypeColors(primaryType);
@@ -28,6 +35,55 @@ export default function PokemonCard({ pokemon }) {
       <div className={cn("h-1.5 rounded-t-2xl", typeColors.bg)} />
 
       <div className="p-4">
+        {/* Action buttons */}
+        <div className="mb-1 flex justify-end gap-1">
+          {onToggleCompare && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleCompare(pokemon);
+              }}
+              aria-label={
+                isComparing ? `Remove ${name} from comparison` : `Compare ${name}`
+              }
+              aria-pressed={isComparing}
+              className={cn(
+                "rounded-full p-1.5 transition-all duration-150",
+                isComparing
+                  ? "bg-blue-100 text-blue-600"
+                  : "text-slate-300 hover:bg-slate-100 hover:text-slate-500"
+              )}
+            >
+              <GitCompareArrows className="h-4 w-4" />
+            </button>
+          )}
+          {onToggleFavorite && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleFavorite(name);
+              }}
+              aria-label={isFavorite ? `Unfavorite ${name}` : `Favorite ${name}`}
+              aria-pressed={isFavorite}
+              className={cn(
+                "rounded-full p-1.5 transition-all duration-150",
+                isFavorite
+                  ? "text-red-500"
+                  : "text-slate-300 hover:bg-slate-100 hover:text-slate-500"
+              )}
+            >
+              <Heart
+                className="h-4 w-4"
+                fill={isFavorite ? "currentColor" : "none"}
+              />
+            </button>
+          )}
+        </div>
+
         {/* Image */}
         <div className="relative mx-auto mb-3 h-32 w-32">
           <div className="absolute inset-0 rounded-full bg-slate-50" />

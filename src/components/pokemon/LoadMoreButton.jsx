@@ -9,7 +9,7 @@ export default function LoadMoreButton({ onLoadMore, isLoading, hasMore, loadedC
         onClick={onLoadMore}
         disabled={isLoading}
         aria-label="Load more Pokémon"
-        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition-all duration-150 hover:bg-slate-50 hover:shadow-md active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition-all duration-150 hover:bg-slate-50 hover:shadow-md active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
       >
         {isLoading ? (
           <>
@@ -20,7 +20,7 @@ export default function LoadMoreButton({ onLoadMore, isLoading, hasMore, loadedC
           "Load More Pokémon"
         )}
       </button>
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-slate-400 dark:text-slate-500">
         Showing {loadedCount} of {total}
       </p>
     </div>
