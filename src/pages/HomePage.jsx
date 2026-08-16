@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { Search, Sparkles, Heart, Swords } from "lucide-react";
+import { Search, Heart, Swords } from "lucide-react";
 import usePokemonList from "../hooks/usePokemonList";
 import usePokemonSearch from "../hooks/usePokemonSearch";
 import usePokemonByType from "../hooks/usePokemonByType";
@@ -18,7 +18,6 @@ import LoadMoreButton from "../components/pokemon/LoadMoreButton";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import EmptyState from "../components/ui/EmptyState";
 import AnimatedBackground from "../components/backgrounds/AnimatedBackground";
-import { getPokemonDetails } from "../services/pokeApi";
 
 export default function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,7 +25,6 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   const [sortBy, setSortBy] = useState("default");
-  const [surpriseLoading, setSurpriseLoading] = useState(false);
 
   const list = usePokemonList();
   const search = usePokemonSearch(initialQuery);
@@ -61,23 +59,6 @@ export default function HomePage() {
     compare.clearCompare();
   }
 
-  async function handleSurpriseMe() {
-    if (surpriseLoading) return;
-    setSurpriseLoading(true);
-    try {
-      const randomId = Math.floor(Math.random() * 1010) + 1;
-      const pokemon = await getPokemonDetails(String(randomId));
-      navigate(`/pokemon/${pokemon.name}`);
-    } catch {
-      // Fallback: just navigate to a random page
-      const names = ["pikachu", "charizard", "bulbasaur", "squirtle", "jigglypuff", "gyarados", "dragonite", "mewtwo"];
-      const random = names[Math.floor(Math.random() * names.length)];
-      navigate(`/pokemon/${random}`);
-    } finally {
-      setSurpriseLoading(false);
-    }
-  }
-
   const displayPokemon =
     search.isSearching
       ? []
@@ -110,18 +91,6 @@ export default function HomePage() {
 
           {/* Action Buttons */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <button
-              onClick={handleSurpriseMe}
-              disabled={surpriseLoading}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--color-pokemon-yellow)] to-yellow-400 px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] shadow-md transition-all hover:shadow-lg hover:brightness-110 active:scale-95 disabled:opacity-50 dark:from-yellow-500 dark:to-yellow-400 dark:text-gray-900"
-            >
-              {surpriseLoading ? (
-                <span className="animate-pokeball-spin inline-block h-4 w-4 rounded-full border-2 border-gray-900 border-t-transparent" />
-              ) : (
-                <Sparkles className="h-4 w-4" />
-              )}
-              Surprise Me
-            </button>
             <button
               onClick={() => {
                 document.getElementById("search-input")?.focus();
