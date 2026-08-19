@@ -9,7 +9,6 @@ import TypeBadge from "../components/pokemon/TypeBadge";
 import LoadingSkeleton from "../components/ui/LoadingSkeleton";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import EmptyState from "../components/ui/EmptyState";
-import PokedexScanBackground from "../components/backgrounds/PokedexScanBackground";
 
 const STAT_MAX = 255;
 const STAT_LABELS = {
@@ -153,7 +152,6 @@ export default function PokemonDetailPage() {
   if (loading) {
     return (
       <div>
-        <PokedexScanBackground />
         <div className="relative">
           <BackLink />
           <div className="mt-6">
@@ -208,8 +206,6 @@ export default function PokemonDetailPage() {
 
   return (
     <div>
-      <PokedexScanBackground />
-
       <div className="relative space-y-5">
         <BackLink />
 
@@ -221,7 +217,7 @@ export default function PokemonDetailPage() {
         {/* ─── Hero Card — Pokédex Entry ─── */}
         <div
           className={cn(
-            "animate-fade-in overflow-hidden rounded-xl border bg-[var(--color-pokedex-panel)] dark:bg-[var(--color-pokedex-dark-panel)]",
+            "animate-fade-in overflow-hidden rounded-xl border bg-[var(--color-pokedex-panel)] dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card",
             showScanning ? "border-[var(--color-pokedex-border)] opacity-50 dark:border-[var(--color-pokedex-dark-border)]" : "border-[var(--color-pokedex-border)] dark:border-[var(--color-pokedex-dark-border)]"
           )}
         >
@@ -360,7 +356,7 @@ export default function PokemonDetailPage() {
         )}
 
         {/* ─── Base Stats ─── */}
-        <div className="animate-fade-in rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-5 sm:p-6 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]" style={{ animationDelay: "0.1s" }}>
+        <div className="animate-fade-in rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-5 sm:p-6 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card" style={{ animationDelay: "0.1s" }}>
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-[var(--color-pokemon-yellow)]" />
             <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
@@ -398,7 +394,7 @@ export default function PokemonDetailPage() {
         </div>
 
         {/* ─── Abilities ─── */}
-        <div className="animate-fade-in rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-5 sm:p-6 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]" style={{ animationDelay: "0.15s" }}>
+        <div className="animate-fade-in rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-5 sm:p-6 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card" style={{ animationDelay: "0.15s" }}>
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-[var(--color-pokemon-purple)]" />
             <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
@@ -424,7 +420,7 @@ export default function PokemonDetailPage() {
         </div>
 
         {/* ─── Moves ─── */}
-        <div className="animate-fade-in rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-5 sm:p-6 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]" style={{ animationDelay: "0.2s" }}>
+        <div className="animate-fade-in rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-5 sm:p-6 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card" style={{ animationDelay: "0.2s" }}>
           <div className="flex items-center gap-2">
             <Shield className="h-4 w-4 text-[var(--color-pokemon-blue)]" />
             <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">

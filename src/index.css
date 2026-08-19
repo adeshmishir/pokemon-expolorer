@@ -22,12 +22,12 @@
   --color-pokedex-muted: #6b7280;
   --color-pokedex-subtle: #9ca3af;
 
-  --color-pokedex-dark-bg: #0a0e14;
-  --color-pokedex-dark-surface: #111620;
-  --color-pokedex-dark-panel: #171d2a;
-  --color-pokedex-dark-border: #252d3d;
+  --color-pokedex-dark-bg: #292929;
+  --color-pokedex-dark-surface: #2e2e2e;
+  --color-pokedex-dark-panel: #333333;
+  --color-pokedex-dark-border: #3a3a3a;
   --color-pokedex-dark-text: #e8eaed;
-  --color-pokedex-dark-muted: #8b92a5;
+  --color-pokedex-dark-muted: #9a9a9a;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -138,7 +138,7 @@
     background-image: linear-gradient(
       90deg,
       var(--color-pokedex-dark-border) 0%,
-      #1e2535 50%,
+      #3d3d3d 50%,
       var(--color-pokedex-dark-border) 100%
     );
   }
@@ -232,20 +232,22 @@
 
   /* ─── Card lift ─── */
   .card-lift {
-    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.25s ease;
   }
 
   .card-lift:hover {
     transform: translateY(-6px) scale(1.01);
     box-shadow:
-      0 8px 16px -4px rgba(0, 0, 0, 0.1),
-      0 4px 8px -4px rgba(0, 0, 0, 0.06);
+      0 12px 24px -8px rgba(0, 0, 0, 0.12),
+      0 4px 12px -4px rgba(0, 0, 0, 0.08);
   }
 
   .dark .card-lift:hover {
     box-shadow:
-      0 8px 16px -4px rgba(0, 0, 0, 0.4),
-      0 4px 8px -4px rgba(0, 0, 0, 0.3);
+      0 12px 24px -8px rgba(0, 0, 0, 0.5),
+      0 4px 12px -4px rgba(0, 0, 0, 0.4);
   }
 
   /* ─── Type-colored card background ─── */
@@ -277,6 +279,46 @@
 
   .animate-attack-flash {
     animation: attack-flash 0.5s ease-out forwards;
+  }
+
+  /* ─── Glass card effect ─── */
+  .glass-card {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .dark .glass-card {
+    background: rgba(42, 42, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+      0 4px 16px -4px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  /* ─── Nav bottom border ─── */
+  .nav-glow {
+    box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.2);
+  }
+
+  .dark .nav-glow {
+    box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ─── Active nav indicator ─── */
+  .nav-active-indicator {
+    position: relative;
+  }
+
+  .nav-active-indicator::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: var(--color-pokeball-red);
+    border-radius: 1px;
   }
 
   /* ─── Reduced motion ─── */

@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="mb-16 border-t border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)]/60 py-5 backdrop-blur-sm dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-surface)]/60 sm:mb-0">
+    <footer className="relative z-10 mb-16 border-t border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)]/60 py-5 backdrop-blur-sm dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-surface)]/60 sm:mb-0">
       <div className="mx-auto w-full max-w-6xl px-4 text-center">
         <div className="flex items-center justify-center gap-2">
           <span className="relative flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--color-pokedex-text)] dark:border-[var(--color-pokedex-dark-text)]">

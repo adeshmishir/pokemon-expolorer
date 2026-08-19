@@ -5,7 +5,6 @@ import usePokemonDetails from "../hooks/usePokemonDetails";
 import LoadingSkeleton from "../components/ui/LoadingSkeleton";
 import TypeBadge from "../components/pokemon/TypeBadge";
 import { cn } from "../utils/cn";
-import BattleArenaBackground from "../components/backgrounds/BattleArenaBackground";
 
 const STAT_MAX = 255;
 const STAT_LABELS = {
@@ -61,7 +60,7 @@ function SearchModal({ onSelect, onClose }) {
     : [];
 
   return (
-    <div className="animate-fade-in mb-6 rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-4 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]">
+    <div className="animate-fade-in mb-6 rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-4 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card">
       <div className="mb-3 flex items-center justify-between">
         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
           Select a Pokémon
@@ -159,7 +158,7 @@ function ComparisonView({ a, b, onClear }) {
         <button
           onClick={() => handleAttack("A")}
           className={cn(
-            "flex flex-col items-center gap-2 rounded-xl border bg-[var(--color-pokedex-panel)] p-4 transition-all dark:bg-[var(--color-pokedex-dark-panel)]",
+            "flex flex-col items-center gap-2 rounded-xl border bg-[var(--color-pokedex-panel)] p-4 transition-all dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card",
             attackAnimation === "A" ? "animate-attack-flash border-[var(--color-pokeball-red)]" : "border-[var(--color-pokedex-border)] dark:border-[var(--color-pokedex-dark-border)]"
           )}
         >
@@ -198,7 +197,7 @@ function ComparisonView({ a, b, onClear }) {
         <button
           onClick={() => handleAttack("B")}
           className={cn(
-            "flex flex-col items-center gap-2 rounded-xl border bg-[var(--color-pokedex-panel)] p-4 transition-all dark:bg-[var(--color-pokedex-dark-panel)]",
+            "flex flex-col items-center gap-2 rounded-xl border bg-[var(--color-pokedex-panel)] p-4 transition-all dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card",
             attackAnimation === "B" ? "animate-attack-flash border-[var(--color-pokeball-red)]" : "border-[var(--color-pokedex-border)] dark:border-[var(--color-pokedex-dark-border)]"
           )}
         >
@@ -222,7 +221,7 @@ function ComparisonView({ a, b, onClear }) {
       </div>
 
       {/* ─── Physical Stats ─── */}
-      <div className="rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-4 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]">
+      <div className="rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-4 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card">
         <div className="flex items-center gap-2 mb-3">
           <Ruler className="h-4 w-4 text-blue-500" />
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
@@ -288,7 +287,7 @@ function ComparisonView({ a, b, onClear }) {
       </div>
 
       {/* ─── Base Stats ─── */}
-      <div className="rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-4 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]">
+      <div className="rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-4 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card">
         <div className="flex items-center gap-2 mb-3">
           <Zap className="h-4 w-4 text-[var(--color-pokemon-yellow)]" />
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
@@ -379,7 +378,7 @@ function ComparisonView({ a, b, onClear }) {
       </div>
 
       {/* ─── Abilities ─── */}
-      <div className="rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-4 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]">
+      <div className="rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] p-4 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card">
         <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
           Abilities
         </p>
@@ -446,8 +445,6 @@ export default function BattleLabPage() {
 
   return (
     <div>
-      <BattleArenaBackground />
-
       <div className="relative">
         {/* ─── Header ─── */}
         <div className="animate-fade-in-up mb-8 text-center">

@@ -5,7 +5,6 @@ import { getPokemonDetails } from "../services/pokeApi";
 import PokemonGrid from "../components/pokemon/PokemonGrid";
 import PokemonSkeletonCard from "../components/pokemon/PokemonSkeletonCard";
 import EmptyState from "../components/ui/EmptyState";
-import AnimatedBackground from "../components/backgrounds/AnimatedBackground";
 
 const TOTAL_POKEMON = 1010;
 
@@ -46,8 +45,6 @@ export default function CollectionPage() {
 
   return (
     <div>
-      <AnimatedBackground />
-
       <div className="relative">
         {/* ─── Header ─── */}
         <div className="animate-fade-in-up mb-8 text-center">

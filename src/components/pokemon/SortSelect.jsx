@@ -1,18 +1,14 @@
 import { ArrowUpDown } from "lucide-react";
 
 const SORT_OPTIONS = [
-  { value: "default", label: "Default" },
-  { value: "id-asc", label: "ID (Low → High)" },
-  { value: "id-desc", label: "ID (High → Low)" },
-  { value: "name-asc", label: "Name (A → Z)" },
-  { value: "name-desc", label: "Name (Z → A)" },
-  { value: "hp-desc", label: "HP" },
-  { value: "attack-desc", label: "Attack" },
-  { value: "speed-desc", label: "Speed" },
+  { value: "id-asc", label: "Lowest to Highest" },
+  { value: "id-desc", label: "Highest to Lowest" },
+  { value: "name-asc", label: "A-Z" },
+  { value: "name-desc", label: "Z-A" },
 ];
 
 export function sortPokemon(pokemon, sortBy) {
-  if (sortBy === "default") return pokemon;
+  if (!sortBy) return pokemon;
 
   const sorted = [...pokemon];
 
@@ -25,23 +21,6 @@ export function sortPokemon(pokemon, sortBy) {
       return sorted.sort((a, b) => a.name.localeCompare(b.name));
     case "name-desc":
       return sorted.sort((a, b) => b.name.localeCompare(a.name));
-    case "hp-desc": {
-      const getStat = (p, name) =>
-        p.stats?.find((s) => s.name === name)?.base ?? 0;
-      return sorted.sort((a, b) => getStat(b, "hp") - getStat(a, "hp"));
-    }
-    case "attack-desc": {
-      const getStat = (p, name) =>
-        p.stats?.find((s) => s.name === name)?.base ?? 0;
-      return sorted.sort(
-        (a, b) => getStat(b, "attack") - getStat(a, "attack")
-      );
-    }
-    case "speed-desc": {
-      const getStat = (p, name) =>
-        p.stats?.find((s) => s.name === name)?.base ?? 0;
-      return sorted.sort((a, b) => getStat(b, "speed") - getStat(a, "speed"));
-    }
     default:
       return sorted;
   }
@@ -50,7 +29,7 @@ export function sortPokemon(pokemon, sortBy) {
 export default function SortSelect({ value, onChange }) {
   return (
     <div className="mb-6 flex justify-center">
-      <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-3 py-1.5 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]">
+      <div className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-3 py-1.5 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]">
         <ArrowUpDown className="h-3.5 w-3.5 text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]" aria-hidden="true" />
         <label htmlFor="sort-select" className="sr-only">
           Sort Pokémon

@@ -28,16 +28,16 @@ export default function PokemonCard({
       aria-label={`View ${name} details`}
       className={cn(
         "group relative block overflow-hidden rounded-xl border bg-[var(--color-pokedex-panel)] outline-none card-lift",
-        "transition-all duration-200 ease-out",
+        "transition-all duration-250 ease-out",
         "active:scale-[0.98]",
         "focus-visible:ring-2 focus-visible:ring-offset-2",
         "border-[var(--color-pokedex-border)] focus-visible:ring-[var(--color-pokeball-red)]/40",
-        "dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)]"
+        "dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:glass-card"
       )}
     >
       {/* Type-colored gradient background */}
       <div
-        className="absolute inset-0 opacity-[0.07] transition-opacity duration-300 group-hover:opacity-[0.12] dark:opacity-[0.1] dark:group-hover:opacity-[0.15]"
+        className="absolute inset-0 opacity-[0.06] transition-opacity duration-300 group-hover:opacity-[0.12] dark:opacity-[0.08] dark:group-hover:opacity-[0.14]"
         style={{
           background: `linear-gradient(135deg, ${typeColors.hex || "#e2e5e9"} 0%, transparent 70%)`,
         }}
@@ -69,7 +69,7 @@ export default function PokemonCard({
                   "rounded-md p-1 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[var(--color-pokeball-red)]/50 focus-visible:ring-offset-1",
                   isComparing
                     ? "bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400"
-                    : "text-[var(--color-pokedex-subtle)] hover:bg-[var(--color-pokedex-border)]/50 hover:text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)] dark:hover:bg-[var(--color-pokedex-dark-border)]/50"
+                    : "text-[var(--color-pokedex-subtle)] hover:bg-[var(--color-pokedex-border)]/50 hover:text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)] dark:hover:bg-[var(--color-pokedex-dark-border)]/50 dark:hover:text-[var(--color-pokedex-dark-text)]"
                 )}
               >
                 <GitCompareArrows className="h-3.5 w-3.5" />
@@ -89,7 +89,7 @@ export default function PokemonCard({
                   "rounded-md p-1 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[var(--color-pokeball-red)]/50 focus-visible:ring-offset-1",
                   isFavorite
                     ? "text-[var(--color-pokeball-red)]"
-                    : "text-[var(--color-pokedex-subtle)] hover:bg-[var(--color-pokedex-border)]/50 hover:text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)] dark:hover:bg-[var(--color-pokedex-dark-border)]/50"
+                    : "text-[var(--color-pokedex-subtle)] hover:bg-[var(--color-pokedex-border)]/50 hover:text-[var(--color-pokedex-muted)] dark:text-[var(--color-pokedex-dark-muted)] dark:hover:bg-[var(--color-pokedex-dark-border)]/50 dark:hover:text-[var(--color-pokedex-dark-text)]"
                 )}
               >
                 <Heart
@@ -103,7 +103,7 @@ export default function PokemonCard({
 
         {/* Image */}
         <div className="relative mx-auto mb-2 h-28 w-28 sm:h-32 sm:w-32">
-          <div className="absolute inset-0 rounded-full bg-[var(--color-pokedex-surface)] transition-transform duration-300 group-hover:scale-105 dark:bg-[var(--color-pokedex-dark-bg)]" />
+          <div className="absolute inset-0 rounded-full bg-[var(--color-pokedex-surface)] transition-all duration-300 group-hover:scale-105 dark:bg-[var(--color-pokedex-dark-bg)]" />
           {image ? (
             <img
               src={image}

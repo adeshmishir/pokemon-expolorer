@@ -17,14 +17,13 @@ import ComparePanel from "../components/pokemon/ComparePanel";
 import LoadMoreButton from "../components/pokemon/LoadMoreButton";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import EmptyState from "../components/ui/EmptyState";
-import AnimatedBackground from "../components/backgrounds/AnimatedBackground";
 
 export default function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const navigate = useNavigate();
 
-  const [sortBy, setSortBy] = useState("default");
+  const [sortBy, setSortBy] = useState("id-asc");
 
   const list = usePokemonList();
   const search = usePokemonSearch(initialQuery);
@@ -59,6 +58,16 @@ export default function HomePage() {
     compare.clearCompare();
   }
 
+  function handleSearchChange(q) {
+    if (q.trim() === "") {
+      handleClearSearch();
+    } else {
+      search.setQuery(q);
+      type.changeType("all");
+      setSearchParams(q ? { q } : {});
+    }
+  }
+
   const displayPokemon =
     search.isSearching
       ? []
@@ -68,8 +77,6 @@ export default function HomePage() {
 
   return (
     <div aria-busy={list.loading || search.searchLoading || type.typeLoading}>
-      <AnimatedBackground />
-
       <div className="relative">
         {/* ─── Hero Section ─── */}
         <div className="animate-fade-in-up mb-12 text-center">
@@ -95,21 +102,21 @@ export default function HomePage() {
               onClick={() => {
                 document.getElementById("search-input")?.focus();
               }}
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] transition-all hover:border-[var(--color-pokeball-red)]/30 hover:bg-[var(--color-pokedex-surface)] active:scale-95 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-text)] dark:hover:border-[var(--color-pokeball-red)]/30"
+              className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] transition-all duration-200 hover:border-[var(--color-pokeball-red)]/30 hover:bg-[var(--color-pokedex-surface)] hover:shadow-md active:scale-95 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-text)] dark:hover:border-[var(--color-pokedex-dark-border)]"
             >
               <Search className="h-4 w-4" />
               Search
             </button>
             <button
               onClick={() => navigate("/collection")}
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] transition-all hover:border-red-300 hover:bg-red-50/50 active:scale-95 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-text)] dark:hover:border-red-500/30"
+              className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] transition-all duration-200 hover:border-red-300 hover:bg-red-50/50 hover:shadow-md active:scale-95 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-text)] dark:hover:border-red-500/30"
             >
               <Heart className="h-4 w-4" />
               My Collection
             </button>
             <button
               onClick={() => navigate("/battle-lab")}
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] transition-all hover:border-blue-300 hover:bg-blue-50/50 active:scale-95 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-text)] dark:hover:border-blue-500/30"
+              className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-pokedex-border)] bg-[var(--color-pokedex-panel)] px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-pokedex-text)] transition-all duration-200 hover:border-blue-300 hover:bg-blue-50/50 hover:shadow-md active:scale-95 dark:border-[var(--color-pokedex-dark-border)] dark:bg-[var(--color-pokedex-dark-panel)] dark:text-[var(--color-pokedex-dark-text)] dark:hover:border-blue-500/30"
             >
               <Swords className="h-4 w-4" />
               Battle Lab
@@ -120,7 +127,7 @@ export default function HomePage() {
         {/* ─── Search ─── */}
         <SearchBar
           value={search.searchQuery}
-          onChange={(q) => { search.setQuery(q); type.changeType("all"); setSearchParams(q ? { q } : {}); }}
+          onChange={handleSearchChange}
           onSubmit={() => handleSearch(search.searchQuery)}
           onClear={handleClearSearch}
           suggestions={allNames}
