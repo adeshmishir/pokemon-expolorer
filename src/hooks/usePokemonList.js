@@ -1,59 +1,68 @@
-import { useState, useEffect, useCallback } from "react";
-import { getPokemonList, getPokemonDetails } from "../services/pokeApi";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { getPokemonDetails } from "../services/pokeApi";
 import { isApiError } from "../utils/errors";
 
-export default function usePokemonList(limit = 20) {
+const PAGE_SIZE = 20;
+const detailCache = new Map();
+
+async function fetchDetailCached(name) {
+  if (detailCache.has(name)) return detailCache.get(name);
+  const detail = await getPokemonDetails(name);
+  detailCache.set(name, detail);
+  return detail;
+}
+
+export default function usePokemonList(processedList = [], totalFiltered = 0) {
   const [pokemon, setPokemon] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [total, setTotal] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [error, setError] = useState(null);
+  const fetchIdRef = useRef(0);
 
   useEffect(() => {
-    let cancelled = false;
+    const id = ++fetchIdRef.current;
+    setLoading(true);
+    setError(null);
+    setPokemon([]);
 
-    async function fetchInitial() {
-      setLoading(true);
-      setError(null);
+    const firstPage = processedList.slice(0, PAGE_SIZE);
 
-      try {
-        const list = await getPokemonList(limit, 0);
-        const results = await Promise.allSettled(
-          list.results.map((p) => getPokemonDetails(p.name))
-        );
+    if (firstPage.length === 0) {
+      setPokemon([]);
+      setLoading(false);
+      return;
+    }
 
-        if (cancelled) return;
-
+    Promise.allSettled(firstPage.map((p) => fetchDetailCached(p.name)))
+      .then((results) => {
+        if (id !== fetchIdRef.current) return;
         const succeeded = results
           .filter((r) => r.status === "fulfilled")
           .map((r) => r.value);
-
         setPokemon(succeeded);
-        setTotal(list.count);
-        setHasMore(list.next !== null);
-      } catch (err) {
-        if (!cancelled) {
-          setError(isApiError(err) ? err.message : "Failed to load Pokémon");
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    fetchInitial();
-    return () => { cancelled = true; };
-  }, [limit]);
+      })
+      .catch((err) => {
+        if (id !== fetchIdRef.current) return;
+        setError(isApiError(err) ? err.message : "Failed to load Pokémon");
+      })
+      .finally(() => {
+        if (id === fetchIdRef.current) setLoading(false);
+      });
+  }, [processedList]);
 
   const loadMore = useCallback(async () => {
     if (loadingMore) return;
-
     setLoadingMore(true);
 
     try {
-      const list = await getPokemonList(limit, pokemon.length);
+      const nextPageNum = Math.ceil(pokemon.length / PAGE_SIZE);
+      const start = nextPageNum * PAGE_SIZE;
+      const nextPage = processedList.slice(start, start + PAGE_SIZE);
+
+      if (nextPage.length === 0) return;
+
       const results = await Promise.allSettled(
-        list.results.map((p) => getPokemonDetails(p.name))
+        nextPage.map((p) => fetchDetailCached(p.name))
       );
 
       const succeeded = results
@@ -61,28 +70,22 @@ export default function usePokemonList(limit = 20) {
         .map((r) => r.value);
 
       setPokemon((prev) => [...prev, ...succeeded]);
-      setHasMore(list.next !== null);
     } catch {
-      // keep existing pokemon visible, button stays for retry
+      // keep existing pokemon visible
     } finally {
       setLoadingMore(false);
     }
-  }, [loadingMore, pokemon.length, limit]);
+  }, [loadingMore, pokemon.length, processedList]);
 
-  const retry = useCallback(() => {
-    setPokemon([]);
-    setLoading(true);
-    setError(null);
-  }, []);
+  const hasMore = pokemon.length < totalFiltered && pokemon.length > 0;
 
   return {
     pokemon,
     loading,
-    error,
-    total,
-    hasMore,
     loadingMore,
+    error,
     loadMore,
-    retry,
+    hasMore,
+    total: totalFiltered,
   };
 }

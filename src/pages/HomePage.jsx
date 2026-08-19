@@ -1,18 +1,17 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Search, Heart, Swords } from "lucide-react";
-import usePokemonList from "../hooks/usePokemonList";
+import usePokemonDataset from "../hooks/usePokemonDataset";
 import usePokemonSearch from "../hooks/usePokemonSearch";
 import usePokemonByType from "../hooks/usePokemonByType";
-import usePokemonNames from "../hooks/usePokemonNames";
+import usePokemonList from "../hooks/usePokemonList";
 import useFavorites from "../hooks/useFavorites";
 import useCompare from "../hooks/useCompare";
 import { sortPokemon } from "../components/pokemon/SortSelect";
 import PokemonGrid from "../components/pokemon/PokemonGrid";
 import PokemonSkeletonCard from "../components/pokemon/PokemonSkeletonCard";
 import SearchBar from "../components/pokemon/SearchBar";
-import TypeFilter from "../components/pokemon/TypeFilter";
-import SortSelect from "../components/pokemon/SortSelect";
+import AdvancedSearch from "../components/pokemon/AdvancedSearch";
 import ComparePanel from "../components/pokemon/ComparePanel";
 import LoadMoreButton from "../components/pokemon/LoadMoreButton";
 import ErrorMessage from "../components/ui/ErrorMessage";
@@ -25,16 +24,46 @@ export default function HomePage() {
 
   const [sortBy, setSortBy] = useState("id-asc");
 
-  const list = usePokemonList();
-  const search = usePokemonSearch(initialQuery);
+  const { allPokemon, loading: datasetLoading, error: datasetError } = usePokemonDataset();
+  const search = usePokemonSearch(allPokemon, initialQuery);
   const type = usePokemonByType();
-  const allNames = usePokemonNames();
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const compare = useCompare();
 
+  const processedList = useMemo(() => {
+    if (datasetLoading || allPokemon.length === 0) return [];
+
+    if (type.isTypeFiltering && type.typeNames.length === 0) return [];
+
+    let result = allPokemon;
+
+    if (search.isSearching && search.searchQuery.trim()) {
+      const q = search.searchQuery.trim().toLowerCase();
+      result = result.filter((p) => p.name.toLowerCase().includes(q));
+    }
+
+    if (type.isTypeFiltering && type.typeNames.length > 0) {
+      const typeSet = new Set(type.typeNames.map((t) => t.name.toLowerCase()));
+      result = result.filter((p) => typeSet.has(p.name.toLowerCase()));
+    }
+
+    result = sortPokemon(result, sortBy);
+
+    return result;
+  }, [allPokemon, search.searchQuery, search.isSearching, type.typeNames, type.isTypeFiltering, sortBy, datasetLoading]);
+
+  const {
+    pokemon,
+    loading: listLoading,
+    loadingMore,
+    error: listError,
+    loadMore,
+    hasMore,
+    total,
+  } = usePokemonList(processedList, processedList.length);
+
   function handleSearch(query) {
     search.search(query);
-    type.changeType("all");
     if (query) {
       setSearchParams({ q: query });
     } else {
@@ -44,14 +73,11 @@ export default function HomePage() {
 
   function handleClearSearch() {
     search.clearSearch();
-    type.changeType("all");
     setSearchParams({});
   }
 
   function handleTypeChange(typeName) {
     type.changeType(typeName);
-    search.clearSearch();
-    setSearchParams({});
   }
 
   function handleCloseCompare() {
@@ -63,24 +89,29 @@ export default function HomePage() {
       handleClearSearch();
     } else {
       search.setQuery(q);
-      type.changeType("all");
       setSearchParams(q ? { q } : {});
     }
   }
 
-  const displayPokemon =
-    search.isSearching
-      ? []
-      : type.isTypeFiltering
-        ? sortPokemon(type.typePokemon, sortBy)
-        : sortPokemon(list.pokemon, sortBy);
+  const sectionLabel = search.isSearching
+    ? type.isTypeFiltering
+      ? `${type.selectedType} Pokémon`
+      : "Search Results"
+    : type.isTypeFiltering
+      ? type.typeLoading
+        ? "Loading..."
+        : `${type.selectedType} Pokémon`
+      : "All Pokémon";
+
+  const isInitialLoading = datasetLoading || (type.isTypeFiltering && type.typeNames.length === 0) || (listLoading && pokemon.length === 0);
+  const isEmpty = !isInitialLoading && !datasetError && !listError && processedList.length === 0;
+  const hasResults = !isInitialLoading && !datasetError && pokemon.length > 0;
 
   return (
-    <div aria-busy={list.loading || search.searchLoading || type.typeLoading}>
+    <div aria-busy={isInitialLoading}>
       <div className="relative">
         {/* ─── Hero Section ─── */}
         <div className="animate-fade-in-up mb-12 text-center">
-          {/* Floating Poké Ball */}
           <div className="mb-6 flex justify-center">
             <div className="animate-float relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-[3px] border-[var(--color-pokedex-text)] dark:border-[var(--color-pokedex-dark-text)]">
               <span className="absolute inset-x-0 top-0 h-1/2 bg-[var(--color-pokeball-red)]" />
@@ -96,7 +127,6 @@ export default function HomePage() {
             Discover, collect, and compare every Pokémon
           </p>
 
-          {/* Action Buttons */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={() => {
@@ -130,55 +160,53 @@ export default function HomePage() {
           onChange={handleSearchChange}
           onSubmit={() => handleSearch(search.searchQuery)}
           onClear={handleClearSearch}
-          suggestions={allNames}
+          suggestions={allPokemon}
         />
 
         {/* ─── Section divider ─── */}
         <div className="mb-4 flex items-center gap-3">
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[var(--color-pokedex-border)] to-transparent dark:from-transparent dark:via-[var(--color-pokedex-dark-border)] dark:to-transparent" />
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-pokedex-subtle)] dark:text-[var(--color-pokedex-dark-muted)]">
-            {search.isSearching
-              ? "Search Results"
-              : type.isTypeFiltering
-                ? type.typeLoading
-                  ? "Loading..."
-                  : `${type.selectedType} Pokémon`
-                : "All Pokémon"}
+            {sectionLabel}
           </span>
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[var(--color-pokedex-border)] to-transparent dark:from-transparent dark:via-[var(--color-pokedex-dark-border)] dark:to-transparent" />
         </div>
 
-        {/* ─── Type Filter ─── */}
-        <TypeFilter
+        {/* ─── Advanced Search ─── */}
+        <AdvancedSearch
           selectedType={type.selectedType}
           onTypeChange={handleTypeChange}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          isTypeFiltering={type.isTypeFiltering}
+          hasPokemon={allPokemon.length > 0}
         />
-
-        {/* ─── Sort ─── */}
-        {!search.isSearching && !type.isTypeFiltering && list.pokemon.length > 0 && (
-          <SortSelect value={sortBy} onChange={setSortBy} />
-        )}
-
-        {type.isTypeFiltering && type.typePokemon.length > 0 && !type.typeLoading && (
-          <SortSelect value={sortBy} onChange={setSortBy} />
-        )}
 
         {/* ─── Compare Panel ─── */}
         {compare.selected.length > 0 && (
           <ComparePanel pokemon={compare.selected} onClose={handleCloseCompare} />
         )}
 
-        {/* ─── Error — List ─── */}
-        {list.error && !type.isTypeFiltering && (
+        {/* ─── Error — Dataset ─── */}
+        {datasetError && (
           <ErrorMessage
             title="Failed to load Pokémon"
-            message={list.error}
-            onRetry={list.retry}
+            message={datasetError}
+            onRetry={() => window.location.reload()}
+          />
+        )}
+
+        {/* ─── Error — List ─── */}
+        {listError && !datasetError && (
+          <ErrorMessage
+            title="Failed to load Pokémon"
+            message={listError}
+            onRetry={() => window.location.reload()}
           />
         )}
 
         {/* ─── Loading — Initial ─── */}
-        {list.loading && !type.isTypeFiltering && (
+        {isInitialLoading && (
           <PokemonGrid>
             {Array.from({ length: 20 }, (_, i) => (
               <PokemonSkeletonCard key={i} />
@@ -186,105 +214,38 @@ export default function HomePage() {
           </PokemonGrid>
         )}
 
-        {/* ─── Pokemon Grid — Default ─── */}
-        {!list.loading && !list.error && !search.isSearching && !type.isTypeFiltering && displayPokemon.length > 0 && (
+        {/* ─── Results ─── */}
+        {hasResults && (
           <>
             <PokemonGrid
-              pokemon={displayPokemon}
+              pokemon={pokemon}
               isFavorite={isFavorite}
               onToggleFavorite={toggleFavorite}
               isComparing={compare.isSelected}
               onToggleCompare={compare.toggleCompare}
             />
             <LoadMoreButton
-              onLoadMore={list.loadMore}
-              isLoading={list.loadingMore}
-              hasMore={list.hasMore}
-              loadedCount={list.pokemon.length}
-              total={list.total}
+              onLoadMore={loadMore}
+              isLoading={loadingMore}
+              hasMore={hasMore}
+              loadedCount={pokemon.length}
+              total={total}
             />
           </>
         )}
 
-        {/* ─── Empty — Default ─── */}
-        {!list.loading && !list.error && !search.isSearching && !type.isTypeFiltering && list.pokemon.length === 0 && (
-          <EmptyState
-            title="No Pokémon found"
-            description="The Pokédex came up empty."
-          />
-        )}
-
-        {/* ─── Loading — Search ─── */}
-        {search.isSearching && search.searchLoading && (
-          <PokemonGrid>
-            <PokemonSkeletonCard />
-          </PokemonGrid>
-        )}
-
-        {/* ─── Result — Search ─── */}
-        {search.isSearching && search.searchResult && (
-          <PokemonGrid
-            pokemon={[search.searchResult]}
-            isFavorite={isFavorite}
-            onToggleFavorite={toggleFavorite}
-            isComparing={compare.isSelected}
-            onToggleCompare={compare.toggleCompare}
-          />
-        )}
-
-        {/* ─── Not Found — Search ─── */}
-        {search.isSearching && search.searchError === "not_found" && (
-          <EmptyState
-            icon={Search}
-            title="Pokémon not found"
-            description="Try searching for another Pokémon."
-          />
-        )}
-
-        {/* ─── Error — Search ─── */}
-        {search.isSearching && search.searchError === "api_error" && (
-          <ErrorMessage
-            title="Search failed"
-            message="Something went wrong while searching. Please try again."
-            onRetry={() => search.search(search.searchQuery)}
-          />
-        )}
-
-        {/* ─── Loading — Type Filter ─── */}
-        {type.isTypeFiltering && type.typeLoading && (
-          <PokemonGrid>
-            {Array.from({ length: 12 }, (_, i) => (
-              <PokemonSkeletonCard key={i} />
-            ))}
-          </PokemonGrid>
-        )}
-
-        {/* ─── Error — Type Filter ─── */}
-        {type.isTypeFiltering && !type.typeLoading && type.typeError && (
-          <ErrorMessage
-            title="Failed to load Pokémon"
-            message={type.typeError}
-            onRetry={() => type.changeType(type.selectedType)}
-          />
-        )}
-
-        {/* ─── Results — Type Filter ─── */}
-        {type.isTypeFiltering && !type.typeLoading && !type.typeError && displayPokemon.length > 0 && (
-          <PokemonGrid
-            pokemon={displayPokemon}
-            isFavorite={isFavorite}
-            onToggleFavorite={toggleFavorite}
-            isComparing={compare.isSelected}
-            onToggleCompare={compare.toggleCompare}
-          />
-        )}
-
-        {/* ─── Empty — Type Filter ─── */}
-        {type.isTypeFiltering && !type.typeLoading && !type.typeError && type.typePokemon.length === 0 && (
+        {/* ─── Empty ─── */}
+        {isEmpty && (
           <EmptyState
             icon={Search}
             title="No Pokémon found"
-            description="There are no Pokémon available for this type."
+            description={
+              search.isSearching
+                ? "Try searching for another Pokémon."
+                : type.isTypeFiltering
+                  ? "There are no Pokémon available for this type."
+                  : "The Pokédex came up empty."
+            }
           />
         )}
       </div>

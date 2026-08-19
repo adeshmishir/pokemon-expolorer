@@ -1,81 +1,49 @@
-import { useState, useCallback, useEffect, useRef } from "react";
-import { getPokemonDetails } from "../services/pokeApi";
-import { isApiError } from "../utils/errors";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 
-export default function usePokemonSearch(initialQuery = "") {
+export default function usePokemonSearch(allPokemon, initialQuery = "") {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [searchResult, setSearchResult] = useState(null);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [searchError, setSearchError] = useState(null);
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(!!initialQuery.trim());
   const didAutoSearch = useRef(false);
 
   useEffect(() => {
     if (initialQuery.trim() && !didAutoSearch.current) {
       didAutoSearch.current = true;
-      const normalized = initialQuery.trim().toLowerCase();
+      setSearchQuery(initialQuery.trim());
       setIsSearching(true);
-      setSearchLoading(true);
-      getPokemonDetails(normalized)
-        .then((data) => {
-          setSearchResult(data);
-          setSearchLoading(false);
-        })
-        .catch((err) => {
-          setSearchLoading(false);
-          if (isApiError(err) && err.status === 404) {
-            setSearchError("not_found");
-          } else {
-            setSearchError("api_error");
-          }
-        });
     }
   }, [initialQuery]);
 
+  const searchResults = useMemo(() => {
+    if (!isSearching || !searchQuery.trim()) return [];
+    const q = searchQuery.trim().toLowerCase();
+    return allPokemon.filter((p) => p.name.toLowerCase().includes(q));
+  }, [allPokemon, searchQuery, isSearching]);
+
   const search = useCallback((query) => {
     const trimmed = query.trim();
-    if (!trimmed) return;
-
-    const normalized = trimmed.toLowerCase();
-    setSearchQuery(normalized);
+    if (!trimmed) {
+      setIsSearching(false);
+      setSearchQuery("");
+      return;
+    }
+    setSearchQuery(trimmed);
     setIsSearching(true);
-    setSearchLoading(true);
-    setSearchError(null);
-    setSearchResult(null);
-
-    getPokemonDetails(normalized)
-      .then((data) => {
-        setSearchResult(data);
-        setSearchLoading(false);
-      })
-      .catch((err) => {
-        setSearchLoading(false);
-        if (isApiError(err) && err.status === 404) {
-          setSearchError("not_found");
-        } else {
-          setSearchError("api_error");
-        }
-      });
   }, []);
 
   const setQuery = useCallback((query) => {
-    setSearchQuery(query.trim().toLowerCase());
+    setSearchQuery(query);
   }, []);
 
   const clearSearch = useCallback(() => {
     setSearchQuery("");
-    setSearchResult(null);
-    setSearchLoading(false);
-    setSearchError(null);
     setIsSearching(false);
   }, []);
 
   return {
     searchQuery,
-    searchResult,
-    searchLoading,
-    searchError,
+    searchResults,
     isSearching,
+    searchCount: searchResults.length,
     search,
     setQuery,
     clearSearch,

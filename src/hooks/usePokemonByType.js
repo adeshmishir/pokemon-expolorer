@@ -1,10 +1,10 @@
 import { useState, useCallback, useRef } from "react";
-import { getPokemonByType, getPokemonDetails } from "../services/pokeApi";
+import { getPokemonByType } from "../services/pokeApi";
 import { isApiError } from "../utils/errors";
 
 export default function usePokemonByType() {
   const [selectedType, setSelectedType] = useState("all");
-  const [typePokemon, setTypePokemon] = useState([]);
+  const [typeNames, setTypeNames] = useState([]);
   const [typeLoading, setTypeLoading] = useState(false);
   const [typeError, setTypeError] = useState(null);
 
@@ -16,7 +16,7 @@ export default function usePokemonByType() {
     setSelectedType(type);
 
     if (type === "all") {
-      setTypePokemon([]);
+      setTypeNames([]);
       setTypeLoading(false);
       setTypeError(null);
       return;
@@ -25,22 +25,18 @@ export default function usePokemonByType() {
     const id = ++fetchId.current;
     setTypeLoading(true);
     setTypeError(null);
-    setTypePokemon([]);
+    setTypeNames([]);
 
     try {
       const typeData = await getPokemonByType(type);
 
-      const detailResults = await Promise.allSettled(
-        typeData.pokemon.map((p) => getPokemonDetails(p.name))
-      );
-
       if (id !== fetchId.current) return;
 
-      const succeeded = detailResults
-        .filter((r) => r.status === "fulfilled")
-        .map((r) => r.value);
+      const names = typeData.pokemon.map((p) => ({
+        name: p.name,
+      }));
 
-      setTypePokemon(succeeded);
+      setTypeNames(names);
       setTypeLoading(false);
     } catch (err) {
       if (id !== fetchId.current) return;
@@ -56,7 +52,7 @@ export default function usePokemonByType() {
 
   return {
     selectedType,
-    typePokemon,
+    typeNames,
     typeLoading,
     typeError,
     isTypeFiltering,
