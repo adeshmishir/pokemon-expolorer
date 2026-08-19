@@ -1,90 +1,172 @@
-# Pokémon Explorer
+# 🎮 Pokémon Explorer
 
-A production-quality Pokémon Explorer built with React, Vite, and Tailwind CSS, powered by the [PokéAPI](https://pokeapi.co/).
+A production-ready Pokémon Explorer built with **React 19, Vite, Tailwind CSS, and PokéAPI**. The application provides a fast, responsive Pokédex experience with global search, filtering, sorting, favorites, comparison, and detailed Pokémon profiles.
 
-## Features
+🔗 **Live Demo:** https://pokemon-expolorer-azure.vercel.app/
+💻 **GitHub:** https://github.com/adeshmishir/pokemon-expolorer
 
-- **Pokémon Listing** — Paginated grid of all 1000+ Pokémon with artwork, ID, name, and type badges
-- **Search** — Instant name search with shareable `?q=` URLs and keyboard shortcuts (Escape to clear)
-- **Load More** — Append batches of 20 Pokémon with duplicate prevention
-- **Pokémon Details** — Full profile: official artwork, types, height/weight, abilities, base stats, and moves
-- **Type Filtering** — 18 type filter chips with a color-coded system
-- **Sorting** — Sort by ID, Name, HP, Attack, or Speed
-- **Compare** — Select up to 2 Pokémon for side-by-side stat comparison
-- **Favorites** — Heart toggle with localStorage persistence
-- **Dark Mode** — Theme toggle with system preference detection and persistence
-- **Responsive Design** — Optimized for mobile (375px) through desktop (1280px+)
-- **Accessibility** — Skip-to-content link, full keyboard navigation, focus-visible rings, ARIA labels, reduced-motion support
-- **Error Handling** — Friendly error states with retry for all failure paths
-- **Loading States** — Shimmer skeleton placeholders for every async view
+---
 
-## Tech Stack
+## 🚀 Why This Project?
 
-| Layer | Technology |
-|-------|-----------|
-| UI | React 19 |
-| Build | Vite 8 |
-| Styling | Tailwind CSS v4 (CSS-first config) |
-| Routing | React Router 7 |
-| Icons | lucide-react |
-| API | PokéAPI (REST, public, no auth) |
+Pokémon Explorer was built to demonstrate how a real-world React application can handle:
 
-## API Used
+* API-driven data at scale
+* Search and autocomplete
+* Client-side filtering and sorting
+* Pagination and incremental loading
+* Race-condition-safe asynchronous requests
+* Persistent client-side state
+* Responsive and accessible UI
+* Production-ready error and loading states
 
-All data comes from [PokéAPI](https://pokeapi.co/):
+Rather than building a simple Pokémon card grid, the project focuses on **clean architecture, reusable components, and a smooth user experience**.
 
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /pokemon?limit=20&offset=N` | Paginated Pokémon list |
-| `GET /pokemon/{name-or-id}` | Single Pokémon detail |
-| `GET /type` | All Pokémon types |
-| `GET /type/{name}` | Pokémon filtered by type |
+---
 
-Responses are normalized in the service layer (`src/services/pokeApi.js`) to a clean, consistent shape consumed by hooks and components.
+## ✨ Key Features
 
-## Installation
+### 🔎 Global Pokémon Search
 
-```bash
-git clone https://github.com/adeshmishir/pokemon-expolorer.git
-cd pokemon-expolorer
-npm install
+* Search across the complete Pokémon dataset
+* Instant search results and autocomplete suggestions
+* Shareable `?q=` search URLs
+* `Escape` shortcut to clear search
+* Empty search automatically restores the default Pokémon listing
+* Handles invalid searches with a dedicated empty state
+
+### 📊 Filtering & Sorting
+
+* Filter Pokémon by all 18 Pokémon types
+* Four sorting modes:
+
+  * Lowest to Highest
+  * Highest to Lowest
+  * A-Z
+  * Z-A
+* Search, filtering, and sorting work together across the complete dataset
+* Pagination is applied after search/filter/sort processing
+
+### 📚 Pokémon Details
+
+Dedicated detail pages containing:
+
+* Official artwork
+* Pokémon ID and name
+* Types
+* Height and weight
+* Abilities
+* Base statistics
+* Moves
+
+### ❤️ Favorites
+
+* Add/remove Pokémon from favorites
+* Persistent using `localStorage`
+* State remains available across page refreshes
+
+### ⚔️ Pokémon Comparison
+
+* Select up to two Pokémon
+* Side-by-side comparison
+* Compare important base statistics
+
+### 🌙 Dark Mode
+
+* Light/dark theme switching
+* System preference detection
+* Persistent theme preference
+* Prevents theme flash during initial page load
+
+### 📱 Responsive & Accessible
+
+Designed for:
+
+* Mobile — 375px+
+* Tablet
+* Desktop — 1280px+
+
+Includes:
+
+* Keyboard navigation
+* Focus-visible states
+* ARIA labels
+* Skip-to-content navigation
+* Reduced-motion support
+* Responsive layouts
+
+### 🛡️ Production UX
+
+* Loading skeletons
+* Friendly error states
+* Retry functionality
+* Empty states
+* Global error boundary
+* Race-condition protection for asynchronous requests
+
+---
+
+## 🧠 Technical Highlights
+
+### Scalable Data Flow
+
+The application follows a clear data-processing pipeline:
+
+```text
+PokéAPI
+   ↓
+Service Layer
+   ↓
+Custom Hooks
+   ↓
+Search / Filter / Sort
+   ↓
+Pagination
+   ↓
+Reusable React Components
 ```
 
-## Running Locally
+This keeps network logic, business logic, and presentation separate.
 
-```bash
-npm run dev       # Start dev server at http://localhost:5173
-npm run build     # Create production build in dist/
-npm run preview   # Preview the production build locally
-```
+### Race-Condition Safe Search
 
-## Project Structure
+Rapid search/filter changes can cause asynchronous responses to arrive out of order.
 
-```
+The project handles this using **request cancellation and fetch-ID tracking**, ensuring stale API responses cannot overwrite newer state.
+
+### API Response Normalization
+
+PokéAPI responses contain deeply nested structures and more information than the UI requires.
+
+A dedicated service layer normalizes API responses into predictable application-level objects before they reach the components.
+
+### Persistent Client State
+
+`localStorage` is used for:
+
+* Favorites
+* Theme preference
+
+This allows important UI preferences to survive page refreshes.
+
+### Production Routing
+
+The application uses **React Router** with SPA rewrite configuration for static deployment environments such as Vercel.
+
+---
+
+## 🏗️ Architecture
+
+```text
 src/
+│
 ├── components/
-│   ├── common/          # Generic reusable UI primitives
-│   │   └── Button.jsx
-│   ├── layout/          # App shell
-│   │   ├── AppLayout.jsx    # Header + main + Footer + skip link
-│   │   ├── Header.jsx       # Brand + dark mode toggle
-│   │   └── Footer.jsx
-│   ├── pokemon/         # Pokémon-specific building blocks
-│   │   ├── PokemonCard.jsx      # Card with favorite + compare actions
-│   │   ├── PokemonGrid.jsx      # Responsive grid
-│   │   ├── TypeBadge.jsx        # Type-colored pill
-│   │   ├── TypeFilter.jsx       # Type chip radio group
-│   │   ├── SearchBar.jsx        # Search input + clear + Escape
-│   │   ├── LoadMoreButton.jsx   # Pagination button
-│   │   ├── SortSelect.jsx       # Sort dropdown
-│   │   ├── ComparePanel.jsx     # Side-by-side stat comparison
-│   │   └── PokemonSkeletonCard.jsx
-│   └── ui/              # Feedback / system components
-│       ├── LoadingSkeleton.jsx
-│       ├── ErrorMessage.jsx
-│       ├── EmptyState.jsx
-│       └── ErrorBoundary.jsx    # Global crash fallback
-├── hooks/               # Custom hooks (data + state + logic)
+│   ├── common/
+│   ├── layout/
+│   ├── pokemon/
+│   └── ui/
+│
+├── hooks/
 │   ├── usePokemonList.js
 │   ├── usePokemonSearch.js
 │   ├── usePokemonDetails.js
@@ -92,49 +174,181 @@ src/
 │   ├── useFavorites.js
 │   ├── useTheme.js
 │   └── useCompare.js
-├── pages/               # Route-level views (compose hooks + components)
+│
+├── pages/
 │   ├── HomePage.jsx
 │   └── PokemonDetailPage.jsx
-├── services/            # THE ONLY place that touches the network
+│
+├── services/
 │   └── pokeApi.js
-├── utils/               # Pure helpers (no React)
-│   ├── cn.js
-│   ├── typeColors.js
-│   ├── errors.js
-│   └── formatters.js
-├── App.jsx              # Router + routes
-├── main.jsx             # Entry point + ErrorBoundary
-└── index.css            # Tailwind + theme tokens + keyframes + dark mode
+│
+├── utils/
+│
+├── App.jsx
+├── main.jsx
+└── index.css
 ```
 
-### Architecture Rules
+### Architecture Principles
 
-- **services/** — fetch + parse + normalize + errors only
-- **hooks/** — data fetching orchestration + state + business logic
-- **utils/** — pure, deterministic helpers
-- **components/** — presentation + local UI state only
-- **pages/** — composition: hooks + components per route
-- No component imports from `services/` directly — always through a hook
+| Layer         | Responsibility                              |
+| ------------- | ------------------------------------------- |
+| `services/`   | API requests, normalization, error handling |
+| `hooks/`      | Data orchestration and business logic       |
+| `utils/`      | Pure reusable utilities                     |
+| `components/` | UI and presentation                         |
+| `pages/`      | Route-level composition                     |
 
-## Challenges Faced
-
-- **PokéAPI response normalization** — The raw API returns deeply nested, inconsistent shapes. Building a clean normalizer that strips unnecessary fields and produces predictable objects was essential for keeping all downstream code simple.
-- **Race conditions in search/filter** — Rapidly switching between search and type filter could cause stale responses to overwrite newer ones. Solved with cancellation flags and fetch-ID refs in hooks.
-- **Dark mode flash on load** — The theme preference is stored in localStorage, but reading it in React causes a flash of wrong theme. Solved with an inline `<script>` in `index.html` that applies the `.dark` class before React mounts.
-- **Type color contrast** — Picking type colors that look vibrant while passing WCAG AA contrast ratios required careful selection of both foreground text and background colors per type.
-- **SPA routing on static hosts** — BrowserRouter deep links 404 on refresh without server-side rewrite rules. Solved with Vercel's rewrite config.
-
-## Future Improvements
-
-- Infinite scroll with intersection observer as an alternative to Load More
-- Pokémon evolution chain visualization on the detail page
-- Team builder mode (select 6, see type coverage)
-- Pokemon sprites gallery (all forms/generations)
-- Offline support with service worker caching
-- Unit and integration tests (Vitest + React Testing Library)
-- E2E tests (Playwright) for critical user flows
-- Performance profiling and code splitting by route
+**Network access is isolated inside the service layer**, keeping components independent from the API implementation.
 
 ---
 
-Data provided by [PokéAPI](https://pokeapi.co/). All Pokémon names, images, and data are trademarks of Nintendo/Creatures Inc./GAME FREAK Inc.
+## 🛠️ Tech Stack
+
+| Technology          | Purpose                 |
+| ------------------- | ----------------------- |
+| **React 19**        | UI development          |
+| **Vite 8**          | Build tooling           |
+| **Tailwind CSS v4** | Styling                 |
+| **React Router 7**  | Client-side routing     |
+| **Lucide React**    | Icons                   |
+| **PokéAPI**         | Pokémon data            |
+| **localStorage**    | Client-side persistence |
+| **Vercel**          | Deployment              |
+
+---
+
+## 📈 Engineering Challenges
+
+### 1. Handling API Data at Scale
+
+Built reusable fetching and normalization logic to work with **1000+ Pokémon** while keeping components simple and predictable.
+
+### 2. Search Race Conditions
+
+Rapid queries could cause stale API responses to overwrite newer results. Implemented cancellation/fetch-ID protection to ensure only the latest request updates the UI.
+
+### 3. Global Search & Sorting
+
+Search and sorting are designed around the complete Pokémon dataset rather than only the currently visible cards, with pagination applied afterward.
+
+```text
+All Pokémon
+     ↓
+Search
+     ↓
+Filter
+     ↓
+Sort
+     ↓
+Pagination
+     ↓
+UI
+```
+
+### 4. Theme Flash
+
+Prevented the incorrect theme from flashing during application startup by applying the stored/system theme before React mounts.
+
+### 5. Responsive UI
+
+Designed the interface to remain usable from small mobile screens through large desktop displays without duplicating layouts.
+
+### 6. Error & Loading UX
+
+Every asynchronous view includes appropriate loading, error, retry, and empty states instead of leaving users with blank screens.
+
+---
+
+## 📦 Getting Started
+
+### Clone
+
+```bash
+git clone https://github.com/adeshmishir/pokemon-expolorer.git
+cd pokemon-expolorer
+```
+
+### Install
+
+```bash
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+### Production Build
+
+```bash
+npm run build
+```
+
+### Preview
+
+```bash
+npm run preview
+```
+
+---
+
+## 🎯 What This Project Demonstrates
+
+This project demonstrates practical experience with:
+
+* React application architecture
+* REST API integration
+* Custom React hooks
+* Asynchronous state management
+* Search and autocomplete
+* Filtering and sorting
+* Pagination
+* Race-condition handling
+* Client-side persistence
+* Responsive UI development
+* Accessibility
+* Error handling
+* Production builds
+* SPA routing and deployment
+
+---
+
+## 🔮 Future Improvements
+
+Potential next steps:
+
+* Pokémon evolution-chain visualization
+* Team builder with type coverage analysis
+* Pokémon forms and generations gallery
+* Offline-first support
+* Vitest + React Testing Library coverage
+* Playwright E2E testing
+* Route-level code splitting
+* Performance profiling
+
+---
+
+## 📸 Project Preview
+
+*Add screenshots or a short GIF here showing the main Pokédex, search suggestions, Pokémon details, and comparison experience.*
+
+---
+
+## 📄 License & Data
+
+Pokémon data is provided by **PokéAPI**.
+
+Pokémon names, artwork, and related intellectual property belong to Nintendo, Creatures Inc., and GAME FREAK Inc.
+
+---
+
+### 👨‍💻 Author
+
+**Adesh Mishra**
+
+B.Tech CSE — IIIT Bhopal
+
+[GitHub](https://github.com/adeshmishir) • [LinkedIn](https://www.linkedin.com/in/adesh-mishra/)
